@@ -6,17 +6,19 @@
     "esModuleInterop": true,
     "strict": true,
     "outDir": "dist",
-    "rootDir": "src",
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": "."
   },
   "include": [
     "src/**/*",
-    "*.mjs"
+    "*.mjs",
+    "test/**/*",
+    "vitest.config.ts"
   ],
   "exclude": [
     "node_modules",

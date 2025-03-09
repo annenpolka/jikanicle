@@ -63,10 +63,22 @@ export type TaskSchema = Task;
 export type CreateTaskParamsSchema = CreateTaskParams;
 
 // スキーマを使用した検証関数
+/**
+ * タスク作成パラメータを検証する関数
+ * @param params 検証するタスク作成パラメータ
+ * @returns 検証済みのタスク作成パラメータ
+ * @throws 検証エラーが発生した場合
+ */
 export function validateCreateTaskParams(params: CreateTaskParams): CreateTaskParams {
   return createTaskParamsSchema.parse(params);
 }
 
+/**
+ * タスクオブジェクトを検証する関数
+ * @param task 検証するタスクオブジェクト
+ * @returns 検証済みのタスクオブジェクト
+ * @throws 検証エラーが発生した場合
+ */
 export function validateTask(task: Task): Task {
   return taskSchema.parse(task);
 }

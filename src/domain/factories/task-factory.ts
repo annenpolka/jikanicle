@@ -1,10 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { validateCreateTaskParams } from '../schemas/task-schema';
-import {
-    CreateTaskParams,
-    Task,
-    createTaskId
-} from '../types/Task';
+import { createTaskId, validateCreateTaskParams } from '../schemas/task-schema';
+import type { CreateTaskParams, Task } from '../types/Task';
 
 /**
  * タスクを作成するファクトリ関数
@@ -22,14 +18,14 @@ export function createTask(params: CreateTaskParams): Task {
   const task: Task = {
     id: validParams.id ?? createTaskId(uuidv4()),
     name: validParams.name,
-    description: validParams.description ?? '',
-    status: validParams.status ?? 'NOT_STARTED',
+    description: validParams.description,
+    status: validParams.status,
     category: validParams.category,
-    priority: validParams.priority ?? 'MEDIUM',
+    priority: validParams.priority,
     estimatedDuration: validParams.estimatedDuration,
     createdAt: validParams.createdAt ?? now,
     updatedAt: now,
-    tags: validParams.tags ?? [],
+    tags: validParams.tags,
   };
 
   return task;

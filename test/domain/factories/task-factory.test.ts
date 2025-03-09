@@ -1,14 +1,21 @@
 import { describe, expect, it } from 'vitest'
-import { createTask } from '../../../src/domain/factories/task-factory'
-import { createTaskId } from '../../../src/domain/types/Task'
+import { createTask } from '../../../src/domain/factories/task-factory.js'
+import { createTaskId } from '../../../src/domain/types/Task.js'
+import type { CreateTaskParams } from '../../../src/domain/types/Task.js'
 
 describe('TaskFactory', () => {
   it('createTask should create a valid task with required fields', () => {
-    const task = createTask({
+    const params: CreateTaskParams = {
       name: 'テストタスク',
       estimatedDuration: 30, // 30分の予測所要時間
-      category: 'WORK'
-    })
+      category: 'WORK',
+      description: '',
+      status: 'NOT_STARTED',
+      priority: 'MEDIUM',
+      tags: []
+    }
+
+    const task = createTask(params)
 
     expect(task).toMatchObject({
       name: 'テストタスク',
@@ -32,24 +39,36 @@ describe('TaskFactory', () => {
   it('createTask should throw error for invalid input', () => {
     // 空の名前でエラーが発生することを確認
     expect(() => createTask({
+      description: '',
       name: '',
       estimatedDuration: 30,
-      category: 'WORK'
+      category: 'WORK',
+      status: 'NOT_STARTED',
+      priority: 'MEDIUM',
+      tags: []
     })).toThrow('タスク名は必須です')
 
     // 負の時間でエラーが発生することを確認
     expect(() => createTask({
+      description: '',
       name: 'テストタスク',
       estimatedDuration: -10,
-      category: 'WORK'
+      category: 'WORK',
+      status: 'NOT_STARTED',
+      priority: 'MEDIUM',
+      tags: []
     })).toThrow('予測時間は0以上である必要があります')
 
     // 無効なカテゴリでエラーが発生することを確認
     expect(() => createTask({
+      description: '',
       name: 'テストタスク',
       estimatedDuration: 30,
       // @ts-expect-error 無効なカテゴリを意図的に渡す
-      category: 'INVALID_CATEGORY'
+      category: 'INVALID_CATEGORY',
+      status: 'NOT_STARTED',
+      priority: 'MEDIUM',
+      tags: []
     })).toThrow() // 具体的なエラーメッセージの検証は避ける
   })
 

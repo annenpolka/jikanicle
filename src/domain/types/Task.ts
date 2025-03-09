@@ -9,7 +9,7 @@
 export {
   Category, createTaskId, CreateTaskParams, Priority,
   Task, TaskId, TaskStatus
-} from '../schemas/task-schema';
+} from '../schemas/task-schema.js';
 
 /*
  * 以下は以前の型定義です。

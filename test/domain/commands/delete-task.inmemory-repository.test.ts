@@ -1,8 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { deleteTask } from '../../../src/domain/commands/delete-task';
-import { createInMemoryTaskRepository } from '../../../src/infrastructure/repositories/in-memory-task-repository';
-import type { Task } from '../../../src/domain/types/Task';
-import { createTaskId } from '../../../src/domain/types/Task';
+// 型インポートをグループ化
+import type { Task } from '../../../src/domain/types/Task.js';
+// 値インポート
+import { deleteTask } from '../../../src/domain/commands/delete-task.js';
+import { createInMemoryTaskRepository } from '../../../src/infrastructure/repositories/in-memory-task-repository.js';
+import { createTaskId } from '../../../src/domain/types/Task.js';
 
 describe('deleteTask - InMemoryRepository統合テスト', () => {
   const createTestTask = (override: Partial<Task> = {}): Task => ({

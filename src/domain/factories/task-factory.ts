@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { createTaskId, validateCreateTaskParams } from '../schemas/task-schema';
-import type { CreateTaskParams, Task } from '../types/Task';
+import { createTaskId, validateCreateTaskParams } from '../schemas/task-schema.js';
+import type { CreateTaskParams, Task } from '../types/Task.js';
 
 /**
  * タスクを作成するファクトリ関数

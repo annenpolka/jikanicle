@@ -7,10 +7,10 @@
  * 将来的な拡張ポイントとして、追加のドメインルール検証を組み込める設計になっています。
  */
 
-import type { Result} from 'neverthrow';
+import type { Result } from 'neverthrow';
 import { err, ok } from 'neverthrow';
-import type { TaskId } from '../types/Task';
-import type { TaskRepository } from '../../application/repositories/task-repository';
+import type { TaskId } from '../types/Task.js';
+import type { TaskRepository } from '../../application/repositories/task-repository.js';
 
 /**
  * タスク削除時のエラー型定義

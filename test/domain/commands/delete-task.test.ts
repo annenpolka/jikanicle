@@ -1,10 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 import { err, ok } from 'neverthrow';
-import type { Task } from '../../../src/domain/types/Task';
-import { createTaskId } from '../../../src/domain/types/Task';
-import type { TaskRepository, TaskRepositoryError } from '../../../src/application/repositories/task-repository';
-import type { DeleteTaskError } from '../../../src/domain/commands/delete-task';
-import { deleteTask } from '../../../src/domain/commands/delete-task';
+// 型インポートをグループ化
+import type { Task } from '../../../src/domain/types/Task.js';
+import type { TaskRepository, TaskRepositoryError } from '../../../src/application/repositories/task-repository.js';
+import type { DeleteTaskError } from '../../../src/domain/commands/delete-task.js';
+// 値インポート
+import { createTaskId } from '../../../src/domain/types/Task.js';
+import { deleteTask } from '../../../src/domain/commands/delete-task.js';
 
 describe('deleteTask - 単体テスト', () => {
   // テスト用タスクID

@@ -2,6 +2,12 @@
 
 jicanicle プロジェクトにおけるドキュメント管理のルールは以下の通りです：
 
+## 更新履歴
+
+| 日付 | 更新者 | 内容 |
+|------|--------|------|
+| 2025-03-10 | 開発チーム | ドキュメント構造のリファクタリングに伴う更新 |
+
 ## 基本原則
 
 1. 全てのドキュメントは `docs` ディレクトリに集約する
@@ -14,25 +20,38 @@ jicanicle プロジェクトにおけるドキュメント管理のルールは�
 
 ```
 docs/
-├── technical/  # API仕様書やスキーマ定義など技術的な詳細
-│   ├── *-adr.md       # 設計決定記録（ADR）
-│   ├── *-roadmap.md   # 実装ロードマップ
-│   └── *-implementation.md # 実装詳細ドキュメント
-├── user/       # ユーザー向けドキュメント
-│   └── *.md           # 機能ガイドなど
-└── design/     # 設計関連ドキュメント
-    └── *.md           # ドメインモデル、アーキテクチャなど
+├── architecture/         # アーキテクチャ関連ドキュメント
+│   ├── overview.md       # アーキテクチャ概要
+│   └── decisions/        # 設計決定記録（ADR）
+│       └── *.md          # 個別の設計決定記録
+├── domain/               # ドメイン固有のドキュメント
+│   └── {ドメイン名}/     # 各ドメインのディレクトリ
+│       ├── design.md     # ドメイン設計
+│       ├── implementation.md # 実装詳細
+│       └── status.md     # 実装状況・ロードマップ
+├── guidelines/           # 技術的ガイドライン
+│   └── technical/        # 技術的な詳細ガイドライン
+│       └── *.md          # 個別のガイドライン
+├── project/              # プロジェクト全体のドキュメント
+│   ├── roadmap.md        # プロジェクトロードマップ
+│   └── status.md         # プロジェクト現状
+├── technical/            # 技術的な詳細（旧構造・非推奨）
+├── user/                 # ユーザー向けドキュメント
+│   └── *.md              # 機能ガイドなど
+└── design/               # 旧構造ディレクトリ（非推奨）
 ```
 
 ## 主要ドキュメント
 
-- `jicanicle_設計計画.md` - メインの設計計画書
-- `design/domain-model.md` - ドメインモデル定義
-- `design/architecture.md` - アーキテクチャ設計
+- `project/roadmap.md` - プロジェクト全体のロードマップ
+- `project/status.md` - プロジェクト現状と優先タスク
+- `architecture/overview.md` - アーキテクチャ概要
+- `architecture/decisions/task-deletion-strategy.md` - タスク削除戦略ADR
+- `domain/task/design.md` - タスク管理ドメイン設計
+- `domain/task/implementation.md` - タスク管理ドメイン実装詳細
+- `domain/task/status.md` - タスク管理ドメイン実装状況
+- `guidelines/technical/zod-schema-implementation.md` - Zodスキーマ実装ガイドライン
 - `directory_structure.md` - プロジェクトのディレクトリ構造とファイル説明
-- `technical/task-domain-implementation.md` - タスク管理ドメイン実装詳細
-- `technical/task-domain-adr.md` - タスク管理ドメイン設計決定記録
-- `technical/task-domain-roadmap.md` - タスク管理ドメイン実装ロードマップ
 - `user/task-management.md` - タスク管理機能ユーザーガイド
 
 ## ドキュメントタイプ
@@ -41,9 +60,9 @@ docs/
 
 Architecture Decision Record（設計決定記録）は、重要な設計決定を記録するためのドキュメントです。
 
-**命名規則**: `{機能名}-adr.md`
+**命名規則**: `{決定事項}.md` (例: `task-deletion-strategy.md`)
 
-**格納場所**: `docs/technical/`
+**格納場所**: `docs/architecture/decisions/`
 
 **構成**:
 
@@ -60,19 +79,19 @@ Architecture Decision Record（設計決定記録）は、重要な設計決定�
 - ADR は基本的に不変。新しい決定は新しい ADR として記録する
 - ステータスの変更のみ更新可能
 
-### 2. 実装ロードマップ
+### 2. ドメイン実装状況
 
-実装の現状と今後の計画を記録するドキュメントです。
+ドメインの実装状況と今後の計画を記録するドキュメントです。
 
-**命名規則**: `{機能名}-roadmap.md`
+**命名規則**: `status.md`
 
-**格納場所**: `docs/technical/`
+**格納場所**: `docs/domain/{ドメイン名}/`
 
 **構成**:
 
 - 実装経過（完了したフェーズ）
 - 成果物と主要なメトリクス
-- 今後の計画（予定フェーズ）
+- 今後のロードマップ（予定フェーズ）
 - 技術的負債と改善項目
 - 学んだ教訓
 
@@ -85,9 +104,9 @@ Architecture Decision Record（設計決定記録）は、重要な設計決定�
 
 特定の機能やドメインの具体的な実装詳細を記録するドキュメントです。
 
-**命名規則**: `{機能名}-implementation.md`
+**命名規則**: `implementation.md`
 
-**格納場所**: `docs/technical/`
+**格納場所**: `docs/domain/{ドメイン名}/`
 
 **構成**:
 
@@ -144,6 +163,27 @@ Architecture Decision Record（設計決定記録）は、重要な設計決定�
 - プロジェクト構造の大幅な変更があった場合に更新
 - 定期的に（四半期ごと）最新の状態と一致しているか確認
 
+### 6. 技術ガイドライン
+
+特定の技術や実装パターンに関するガイドラインを記述するドキュメントです。
+
+**命名規則**: `{トピック名}.md`
+
+**格納場所**: `docs/guidelines/technical/`
+
+**構成**:
+
+- ガイドラインの概要と目的
+- 基本原則
+- 実装パターンと例
+- ベストプラクティス
+- よくある問題と解決策
+
+**更新方針**:
+
+- 新しい知見や実装パターンが確立された場合に更新
+- プロジェクト全体に影響する技術的変更があった場合に更新
+
 ## メンテナンス
 
 - ドキュメントの更新は、関連するコード変更と同じプルリクエストで行うことが望ましい
@@ -155,18 +195,19 @@ Architecture Decision Record（設計決定記録）は、重要な設計決定�
 - ファイル名は機能や目的を明確に示す
 - 日付を含める場合は `YYYY-MM-DD_` の形式で先頭に配置
 - バージョン番号を含める場合は `_vX.Y` の形式で末尾に配置
-- ドキュメントタイプを表す接尾辞（`-adr`, `-roadmap`, `-implementation`）を適切に使用する
+- ドキュメントタイプによって適切な命名を行う
 
 ## ドキュメント間の相互参照
 
 - マークダウンの相対リンク記法を使用して相互参照する
   ```markdown
-  [ドメインモデル](../design/domain-model.md)
+  [タスク管理ドメイン設計](../../domain/task/design.md)
   ```
 - 同じドキュメント内の見出しへの参照も活用する
   ```markdown
   [実装の概要](#1-実装の概要)
   ```
+- 「関連ドキュメント」セクションを各ドキュメントの末尾に配置し、関連ドキュメントへのリンクを提供する
 
 ## レビュープロセス
 

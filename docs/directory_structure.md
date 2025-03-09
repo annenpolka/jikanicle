@@ -8,6 +8,7 @@
 |------|--------|------|
 | 2025-03-09 | AI | 初版作成 |
 | 2025-03-09 | AI | 実装状況の更新 |
+| 2025-03-10 | 開発チーム | ドキュメント構造のリファクタリングに伴う更新 |
 
 ## ルートディレクトリ
 
@@ -77,23 +78,25 @@ test/
 
 ```
 docs/
-├── design/                   # 設計関連ドキュメント
-│   ├── architecture.md       # アーキテクチャ設計
-│   ├── domain-model.md       # ドメインモデル定義
-│   ├── implementation-roadmap.md  # 実装ロードマップ
-│   ├── jikanicle_設計計画.md   # 全体設計計画
-│   ├── test-strategy.md      # テスト戦略
-│   └── 要件分析.md           # 要件分析ドキュメント
+├── architecture/             # アーキテクチャ関連ドキュメント
+│   ├── decisions/            # 設計決定記録（ADR）
+│   │   └── task-deletion-strategy.md  # タスク削除戦略に関するADR
+│   └── overview.md           # アーキテクチャ概要
+├── domain/                   # ドメイン固有のドキュメント
+│   └── task/                 # タスク管理ドメイン
+│       ├── design.md         # タスクドメイン設計
+│       ├── implementation.md # タスクドメイン実装詳細
+│       └── status.md         # タスクドメイン実装状況・ロードマップ
+├── guidelines/               # 技術的ガイドライン
+│   └── technical/            # 技術的な詳細ガイドライン
+│       └── zod-schema-implementation.md  # Zodスキーマ実装ガイドライン
+├── project/                  # プロジェクト全体のドキュメント
+│   ├── roadmap.md            # プロジェクトロードマップ
+│   └── status.md             # プロジェクト現状と優先タスク
 ├── directory_structure.md    # このファイル（ディレクトリ構造説明）
 ├── document_rules.md         # ドキュメント管理ルール
-├── technical/                # 技術的な詳細ドキュメント
-│   ├── linter-configuration.md       # リンター設定の詳細
-│   ├── task-domain-adr.md           # タスクドメインのADR
-│   ├── task-domain-implementation.md # タスクドメイン実装詳細
-│   ├── task-domain-roadmap.md       # タスクドメイン実装ロードマップ
-│   └── zod-schema-implementation.md # Zodスキーマ実装詳細
-└── user/                    # ユーザー向けドキュメント
-    └── task-management.md   # タスク管理機能ガイド
+└── user/                     # ユーザー向けドキュメント
+    └── task-management.md    # タスク管理機能ガイド
 ```
 
 ## 主要ファイルの説明
@@ -122,9 +125,14 @@ docs/
 
 ### ドキュメント
 
-- **docs/technical/task-domain-roadmap.md**: タスクドメインの実装計画と進捗状況。
-- **docs/technical/task-domain-adr.md**: タスクドメインに関する設計決定記録。
-- **docs/technical/task-domain-implementation.md**: タスクドメインの実装詳細。
+- **docs/project/roadmap.md**: プロジェクト全体のロードマップと実装計画。
+- **docs/project/status.md**: プロジェクト現状分析とバックログ。
+- **docs/architecture/overview.md**: アーキテクチャ全体の概要と設計方針。
+- **docs/architecture/decisions/task-deletion-strategy.md**: タスク削除戦略についての設計決定記録。
+- **docs/domain/task/design.md**: タスク管理ドメインの設計詳細。
+- **docs/domain/task/implementation.md**: タスク管理ドメインの実装詳細。
+- **docs/domain/task/status.md**: タスク管理ドメインの実装状況とロードマップ。
+- **docs/guidelines/technical/zod-schema-implementation.md**: Zodスキーマ実装のガイドライン。
 
 ## 実装状況
 

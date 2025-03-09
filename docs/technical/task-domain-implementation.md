@@ -1,98 +1,56 @@
-# タスク管理ドメイン実装ドキュメント
+# タスク管理ドメイン実装詳細
 
-このドキュメントでは、jikanicle アプリケーションのタスク管理ドメインの実装について説明します。
+このドキュメントはタスク管理ドメインの実装詳細について説明します。
 
-## 1. 実装の概要
+## 関連ドキュメント
 
-タスク管理ドメインは、DDD の原則に基づいて実装されています。以下の要素を含みます：
+- [タスク管理ドメイン設計決定記録](./task-domain-adr.md)
+- [Zod スキーマ実装](./zod-schema-implementation.md) - 型定義とスキーマの統合に関する詳細
+- [ドメインモデル定義](../design/domain-model.md)
 
-- **ドメインモデル**: タスクを表すエンティティとその関連する値オブジェクト
-- **ファクトリ関数**: タスクの作成を担当
-- **スキーマ**: バリデーション用の Zod スキーマ
+## 実装概要
 
-実装は TDD（テスト駆動開発）アプローチで行われ、高いテストカバレッジを確保しています。
+タスク管理ドメインは DDD の原則に従って設計されており、以下の要素で構成されています：
 
-## 2. 型定義
+1. エンティティと値オブジェクト
+2. ドメインサービス
+3. ファクトリ
+4. リポジトリインターフェース
 
-タスク管理ドメインでは、以下の型定義を行っています：
+## 型定義とスキーマ
 
-### 2.1 TaskId
+タスク管理ドメインでは、型定義とバリデーションスキーマを統合するために Zod を使用しています。詳細は[Zod スキーマ実装](./zod-schema-implementation.md)を参照してください。
 
-タスクを一意に識別するための ID 型です。ブランド型を使用して型安全性を高めています。
+主要な型として以下があります：
 
-```typescript
-export type TaskId = string & { readonly _brand: unique symbol };
+- `Task`: タスクエンティティ
+- `TaskId`: タスク識別子（ブランド型）
+- `Category`: タスクカテゴリ
+- `TaskStatus`: タスクの状態
+- `Priority`: 優先度
 
-export const createTaskId = (id: string): TaskId => {
-  return id as TaskId;
-};
+## ディレクトリ構造
+
+```
+src/domain/
+├── schemas/         # Zodスキーマ定義
+│   └── task-schema.ts
+├── types/           # 型定義（スキーマからの再エクスポート）
+│   └── Task.ts
+├── factories/       # ファクトリ実装
+│   └── task-factory.ts
+└── services/        # ドメインサービス
+    └── task-service.ts
 ```
 
-### 2.2 列挙型（Union Types）
+## 実装詳細
 
-タスクのカテゴリ、ステータス、優先度を表す列挙型です。文字列リテラルのユニオン型として実装されています。
+### 1. スキーマと型定義
 
-```typescript
-export type Category =
-  | 'WORK'
-  | 'PERSONAL_DEV'
-  | 'HOUSEHOLD'
-  | 'LEARNING'
-  | 'OTHER';
-
-export type TaskStatus =
-  | 'NOT_STARTED'
-  | 'IN_PROGRESS'
-  | 'COMPLETED'
-  | 'CANCELLED';
-
-export type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
-```
-
-### 2.3 Task インターフェース
-
-タスクエンティティの構造を定義するインターフェースです。
+`task-schema.ts`には Zod スキーマと型定義が含まれています：
 
 ```typescript
-export interface Task {
-  id: TaskId;
-  name: string;
-  description: string;
-  status: TaskStatus;
-  category: Category;
-  priority: Priority;
-  estimatedDuration: number; // 分単位
-  createdAt: Date;
-  updatedAt: Date;
-  completedAt?: Date;
-  tags: string[];
-}
-```
-
-### 2.4 CreateTaskParams インターフェース
-
-タスク作成時に必要なパラメータを定義するインターフェースです。
-
-```typescript
-export interface CreateTaskParams {
-  name: string;
-  estimatedDuration: number;
-  category: Category;
-  id?: TaskId;
-  description?: string;
-  status?: TaskStatus;
-  priority?: Priority;
-  createdAt?: Date;
-  tags?: string[];
-}
-```
-
-## 3. バリデーションスキーマ
-
-バリデーションは Zod ライブラリを使用して実装されています。以下のスキーマが定義されています：
-
-```typescript
-// カテゴリのスキーマ
+// スキーマ定義
 export const categorySchema = z.enum([
   'WORK',
   'PERSONAL_DEV',
@@ -100,59 +58,44 @@ export const categorySchema = z.enum([
   'LEARNING',
   'OTHER',
 ]);
-
-// タスクステータスのスキーマ
 export const taskStatusSchema = z.enum([
   'NOT_STARTED',
   'IN_PROGRESS',
   'COMPLETED',
   'CANCELLED',
 ]);
+// ...その他のスキーマ定義...
 
-// 優先度のスキーマ
-export const prioritySchema = z.enum(['LOW', 'MEDIUM', 'HIGH']);
-
-// TaskIdのスキーマ
-export const taskIdSchema = z.string().min(1);
-
-// タスク作成パラメータのスキーマ
-export const createTaskParamsSchema = z.object({
-  name: z.string().min(1, { message: 'タスク名は必須です' }),
-  estimatedDuration: z
-    .number()
-    .nonnegative({ message: '予測時間は0以上である必要があります' }),
-  category: categorySchema,
-  id: taskIdSchema.optional(),
-  description: z.string().optional().default(''),
-  status: taskStatusSchema.optional().default('NOT_STARTED'),
-  priority: prioritySchema.optional().default('MEDIUM'),
-  createdAt: z.date().optional(),
-  tags: z.array(z.string()).optional().default([]),
-});
-
-// タスクスキーマ
-export const taskSchema = z.object({
-  id: taskIdSchema,
-  name: z.string().min(1),
-  description: z.string(),
-  status: taskStatusSchema,
-  category: categorySchema,
-  priority: prioritySchema,
-  estimatedDuration: z.number().nonnegative(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-  completedAt: z.date().optional(),
-  tags: z.array(z.string()),
-});
+// スキーマから型を生成
+export type Category = z.infer<typeof categorySchema>;
+export type TaskStatus = z.infer<typeof taskStatusSchema>;
+export type Priority = z.infer<typeof prioritySchema>;
+export type TaskId = z.infer<typeof taskIdSchema>;
+export type Task = z.infer<typeof taskSchema>;
+export type CreateTaskParams = z.infer<typeof createTaskParamsSchema>;
 ```
 
-## 4. タスク作成ファクトリ関数
+`Task.ts`では、これらの型を再エクスポートしています：
 
-タスクを作成するためのファクトリ関数は、バリデーションと適切なデフォルト値の設定を行います：
+```typescript
+export {
+  TaskId,
+  createTaskId,
+  Category,
+  TaskStatus,
+  Priority,
+  Task,
+  CreateTaskParams,
+} from '../schemas/task-schema';
+```
+
+### 2. ファクトリ
+
+`task-factory.ts`はタスクの作成を担当します：
 
 ```typescript
 export function createTask(params: CreateTaskParams): Task {
-  // パラメータのバリデーション - Zodスキーマを使用
+  // パラメータのバリデーション
   const validParams = validateCreateTaskParams(params);
 
   // 現在時刻
@@ -176,54 +119,21 @@ export function createTask(params: CreateTaskParams): Task {
 }
 ```
 
-## 5. 実装の特徴
+## テスト戦略
 
-### 5.1 型安全性
+タスク管理ドメインでは以下のテスト戦略を採用しています：
 
-- **ブランド型**: TaskId にブランド型を使用して型安全性を確保
-- **明確なインターフェース**: すべてのエンティティと値オブジェクトに明確な型定義
-- **Zod による実行時バリデーション**: コンパイル時の型チェックに加えて実行時バリデーション
+1. **ユニットテスト**: 個々のドメインオブジェクトとファクトリのテスト
+2. **プロパティテスト**: バリデーションロジックの網羅的なテスト
+3. **インテグレーションテスト**: リポジトリと組み合わせた際の動作確認
 
-### 5.2 不変性と副作用の制限
+## 将来の拡張
 
-- **イミュータブルなデータ構造**: オブジェクトの変更ではなく新しいオブジェクトを生成
-- **純粋関数**: 副作用を限定したファクトリ関数
+1. サブタスクのサポート
+2. 繰り返しタスクの実装
+3. タスク間の依存関係の定義
 
-### 5.3 テスト容易性
+## 技術的負債
 
-- **依存性の最小化**: 外部依存を最小限に抑えた設計
-- **明確なインターフェース**: テストしやすい API の提供
-- **バリデーションの分離**: ビジネスロジックとバリデーションの関心の分離
-
-## 6. テスト戦略
-
-タスク管理ドメインは以下のテスト戦略によって品質を確保しています：
-
-### 6.1 単体テスト
-
-- **ファクトリ関数のテスト**: 正常系と異常系のテストケース
-- **バリデーションルールのテスト**: 境界値テストと不正値テスト
-
-### 6.2 カバレッジ
-
-現在、以下のカバレッジを達成しています：
-
-- **ステートメントカバレッジ**: 96.55%
-- **ブランチカバレッジ**: 55.55%
-- **関数カバレッジ**: 75%
-- **行カバレッジ**: 96.55%
-
-## 7. 今後の発展
-
-タスク管理ドメインは以下の方向で発展させることができます：
-
-- **タスクコレクション管理**: タスクのコレクションを管理するリポジトリの実装
-- **タスク操作コマンド**: タスクの更新、削除などの操作を行うコマンド関数
-- **タスククエリ機能**: タスクの検索、フィルタリング機能
-- **タスク間の関係**: 依存関係や優先順位付けなどの関係性の実装
-
-## 8. 参考資料
-
-- **ドメインモデル設計ドキュメント**: `docs/design/domain-model.md`
-- **アーキテクチャドキュメント**: `docs/design/architecture.md`
-- **テスト戦略ドキュメント**: `docs/design/test-strategy.md`
+1. 一部のバリデーションロジックの見直し
+2. パフォーマンス最適化（大量のタスク処理時）

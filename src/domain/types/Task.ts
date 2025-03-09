@@ -1,39 +1,33 @@
 /**
  * タスク管理コンテキストの型定義
+ *
+ * 注意: この型定義ファイルはスキーマファイルから再エクスポートされた型を使用します。
+ * 型定義とバリデーションが統一されています。
  */
 
-/**
- * タスクIDの型
- * UUIDを表すブランド型
- */
+// schemaから型を再エクスポート
+export {
+  Category, createTaskId, CreateTaskParams, Priority,
+  Task, TaskId, TaskStatus
+} from '../schemas/task-schema';
+
+/*
+ * 以下は以前の型定義です。
+ * 現在はスキーマから生成された型に置き換えられています。
+ * 参照のために残しています。
+
 export type TaskId = string & { readonly _brand: unique symbol };
 
-/**
- * 新しいTaskIdを作成する関数
- * @param id - UUIDの文字列
- */
 export const createTaskId = (id: string): TaskId => {
   return id as TaskId;
 };
 
-/**
- * タスクカテゴリの型
- */
 export type Category = 'WORK' | 'PERSONAL_DEV' | 'HOUSEHOLD' | 'LEARNING' | 'OTHER';
 
-/**
- * タスクの状態を表す型
- */
 export type TaskStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
 
-/**
- * 優先度の型
- */
 export type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
 
-/**
- * タスクの値オブジェクト型
- */
 export interface Task {
   id: TaskId;
   name: string;
@@ -48,9 +42,6 @@ export interface Task {
   tags: string[];
 }
 
-/**
- * タスク作成時の入力パラメータ
- */
 export interface CreateTaskParams {
   name: string;
   estimatedDuration: number;
@@ -62,3 +53,4 @@ export interface CreateTaskParams {
   createdAt?: Date;
   tags?: string[];
 }
+*/

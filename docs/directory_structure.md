@@ -7,6 +7,7 @@
 | 日付 | 更新者 | 内容 |
 |------|--------|------|
 | 2025-03-09 | AI | 初版作成 |
+| 2025-03-09 | AI | 実装状況の更新 |
 
 ## ルートディレクトリ
 
@@ -38,11 +39,14 @@ jikanicle/
 src/
 ├── application/          # アプリケーション層（ユースケース実装）
 │   ├── repositories/     # リポジトリインターフェース
+│   │   └── task-repository.ts # タスクリポジトリインターフェース
 │   └── services/         # アプリケーションサービス
 ├── domain/               # ドメイン層（ビジネスロジック）
 │   ├── commands/         # コマンドオブジェクト
+│   │   └── delete-task.ts  # タスク削除コマンド
 │   ├── factories/        # ファクトリクラス
-│   │   └── task-factory.ts  # タスク作成ファクトリ
+│   │   ├── task-factory.ts  # タスク作成ファクトリ
+│   │   └── update-task.ts   # タスク更新ファクトリ
 │   ├── schemas/          # バリデーションスキーマ
 │   │   └── task-schema.ts   # タスクのZodスキーマ定義
 │   ├── services/         # ドメインサービス
@@ -51,6 +55,7 @@ src/
 └── infrastructure/       # インフラストラクチャ層（外部サービス連携）
     ├── ai/               # AI関連の実装
     ├── repositories/     # リポジトリの実装
+    │   └── in-memory-task-repository.ts # インメモリタスクリポジトリ実装
     └── ui/               # ユーザーインターフェース実装
 ```
 
@@ -58,10 +63,14 @@ src/
 
 ```
 test/
-└── domain/               # ドメイン層のテスト
-    ├── factories/        # ファクトリのテスト
-    │   └── task-factory.test.ts  # タスクファクトリのテスト
-    └── schemas/          # スキーマのテスト
+├── domain/               # ドメイン層のテスト
+│   ├── commands/         # コマンドのテスト
+│   └── factories/        # ファクトリのテスト
+│       ├── task-factory.test.ts  # タスクファクトリのテスト
+│       └── update-task.test.ts   # タスク更新ファクトリのテスト
+└── infrastructure/       # インフラストラクチャ層のテスト
+    └── repositories/     # リポジトリ実装のテスト
+        └── in-memory-task-repository.test.ts # インメモリタスクリポジトリのテスト
 ```
 
 ## ドキュメント構造 (`docs/`)
@@ -94,10 +103,22 @@ docs/
 - **src/domain/types/Task.ts**: タスクに関するドメイン型を定義。TaskId、Category、TaskStatus、Priorityなどの型を提供。
 - **src/domain/schemas/task-schema.ts**: Zodを使用したタスク関連スキーマと検証関数を定義。
 - **src/domain/factories/task-factory.ts**: タスクオブジェクトを作成するファクトリ関数を実装。
+- **src/domain/factories/update-task.ts**: 既存タスクの更新機能を実装。
+- **src/domain/commands/delete-task.ts**: タスク削除コマンドを実装。
+
+### アプリケーション層
+
+- **src/application/repositories/task-repository.ts**: タスクリポジトリのインターフェースを定義。
+
+### インフラストラクチャ層
+
+- **src/infrastructure/repositories/in-memory-task-repository.ts**: インメモリ上でタスクを管理するリポジトリ実装。
 
 ### テスト
 
 - **test/domain/factories/task-factory.test.ts**: タスクファクトリのテストケース。
+- **test/domain/factories/update-task.test.ts**: タスク更新機能のテストケース。
+- **test/infrastructure/repositories/in-memory-task-repository.test.ts**: インメモリタスクリポジトリのテストケース。
 
 ### ドキュメント
 
@@ -107,14 +128,27 @@ docs/
 
 ## 実装状況
 
-現在、タスクドメインの基本的な型定義、スキーマ、およびファクトリが実装されています。
+現在、以下の機能が実装されています：
+
+1. **ドメイン層**:
+   - タスクの基本的な型定義（Task.ts）
+   - タスク検証用Zodスキーマ（task-schema.ts）
+   - タスク作成ファクトリ（task-factory.ts）
+   - タスク更新ファクトリ（update-task.ts）
+   - タスク削除コマンド（delete-task.ts）
+
+2. **アプリケーション層**:
+   - タスクリポジトリインターフェース（task-repository.ts）
+
+3. **インフラストラクチャ層**:
+   - インメモリタスクリポジトリ実装（in-memory-task-repository.ts）
+
 ロードマップに基づき、今後は以下の実装が予定されています：
 
-1. タスクリポジトリの実装
-2. タスク操作機能（更新、削除）の実装
-3. アプリケーションサービスの実装
-4. ユーザーインターフェース実装
-5. 各種拡張機能（検索、フィルタリング、サブタスクなど）
+1. アプリケーションサービスの実装
+2. ユーザーインターフェース実装
+3. 永続化リポジトリの実装
+4. 各種拡張機能（検索、フィルタリング、サブタスクなど）
 
 ## 使用技術とライブラリ
 

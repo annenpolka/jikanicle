@@ -1,0 +1,2 @@
+# ステージされたファイルに対してlint-stagedを実行
+npx lint-staged

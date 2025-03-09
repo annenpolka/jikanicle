@@ -37,3 +37,13 @@ alwaysApply: false
 - 単一責任の原則：各コンポーネントは一つの責任のみを持つ
 - 依存関係逆転の原則：高レベルモジュールは低レベルモジュールに依存しない
 
+## ドキュメント作成
+
+ドメイン設計の文書化時は以下のドキュメントを作成・更新します：
+- **ドメインモデル文書**（`docs/design/domain-model.md`）：エンティティ、値オブジェクト、集約の定義
+- **アーキテクチャ文書**（`docs/design/architecture.md`）：システム構造とコンポーネント間の関係
+- **設計決定記録（ADR）**（`docs/technical/*-adr.md`）：重要な設計決定とその理由
+- **実装ロードマップ**（`docs/technical/*-roadmap.md`）：実装計画と優先順位
+
+ドキュメント作成時は`docs/document_rules.md`に定義された規約に従い、`.cursor/rules/documentation.mdc`のガイドラインを参照してください。
+

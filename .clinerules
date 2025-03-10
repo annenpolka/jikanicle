@@ -1,19 +1,16 @@
 ## 作業開始準備
 
-最初にdocs/document_rules.md を参照して、現在のタスクに関するドキュメントを作成します。
+最初にdocs/document_rules.md を参照し、タスクに関する簡潔なドキュメントを作成します。
 
-`git status` で現在の git のコンテキストを確認します。
-もし指示された内容と無関係な変更が多い場合、現在の変更からユーザーに別のタスクとして開始するように提案してください。
-無視するように言われた場合は、そのまま続行します。
+`git status` で現在のコンテキストを確認します。
+無関係な変更が多い場合は、別タスクとして開始するよう提案してください。
 
-## コーディングプラクティス・開発プロセスのルール
-- いついかなる時も以下の原則に必ず従って開発を進めること
+## 開発原則
 
-### エヴァンスのDDD
-- ユビキタス言語：共通言語の確立
-- バウンデッドコンテキスト：境界の明確化
-- エンティティ/値オブジェクト：識別性vs属性性
-- 集約：整合性単位の設定
+### 機能指向アプローチ
+- 技術レイヤーではなく機能単位での分割
+- 関連コードのコロケーション（同一場所への配置）
+- 過度な抽象化を避けたシンプルな設計
 
 ### ベックのTDD
 - Red-Green-Refactor：失敗→成功→改善
@@ -23,242 +20,39 @@
 
 ### ファウラーの思想
 - リファクタリング：動作維持での構造改善
-- コードスメル：問題兆候の検知
+- コードスメル：問題兆候の早期検知
 - CI/CD：継続的な統合と配信
-- 進化的アーキテクチャ：変化への適応
+- 進化的アーキテクチャ：段階的な改善と適応
 
-### 関数型プログラミング
+### 関数型アプローチ
 - 純粋関数：予測可能な結果
-- 不変性：副作用の排除
-- 高階関数：関数を値として扱う
-- 宣言的プログラミング：意図の明確化
-- 型安全性の確保
+- 不変性：副作用の局所化
+- 型安全性：コンパイル時の安全性確保
 
-## ブーメランタスク機能
+## TypeScript実装ガイドライン
 
-作業を子タスクとして分割すべきと判断した場合は、`<new_task>`ツールを使用してブーメランタスクとして分離します。このツールは、現在の作業文脈を保持したまま独立したタスクを処理し、その結果を得た後で元の文脈に正確に戻る機能です。
+### 型駆動設計
+- 明確な型定義を最初に作成
+- anyの使用を避け、型安全性を確保
+- 意味のある型名と関数インターフェース
 
-タスクの分離と文脈の保持が主な目的であり、単なる質問だけでなく、メインの作業の流れを中断したくない場合に有効です。以下のような場合にタスクを分割すべきか判断します：
-
-- メインタスクの流れから外れる調査や検証が必要になった場合
-- 現在の作業とは異なる視点や専門知識が必要になった場合
-- 作業の一部を独立して考えた方が効率的だと判断した場合
-- 同じ問題に対する別のアプローチを試してみたい場合
-
-各専門的作業での活用例：
-
-- **開発時**: 特定のライブラリやAPIの詳細調査、実装アプローチの比較検討
-- **ドメイン設計時**: 特定のドメイン概念の深掘り、ユースケース分析
-- **テスト設計時**: 特定のテスト手法の調査、テストケース設計の詳細化
-
-使用例：
-```
-<new_task>
-<mode>coordinator</mode>
-<message>認証機能の実装におけるセキュリティリスクの調査</message>
-</new_task>
-```
-
-## TypeScript
-
-TypeScriptでのコーディングにおける一般的なベストプラクティスをまとめます。
-
-### 方針
-
-- 最初に型と、それを処理する関数のインターフェースを考える
-- コードのコメントとして、そのファイルがどういう仕様化を可能な限り明記する
-- 実装が内部状態を持たないとき、 class による実装を避けて関数を優先する
-- 副作用を抽象するために、アダプタパターンで外部依存を抽象し、テストではインメモリなアダプタで処理する
-
-### 型の使用方針
-
-1. 具体的な型を使用
-   - any の使用を避ける
-   - unknown を使用してから型を絞り込む
-   - Utility Types を活用する
-
-2. 型エイリアスの命名
-   - 意味のある名前をつける
-   - 型の意図を明確にする
-   ```ts
-   // Good
-   type UserId = string;
-   type UserData = {
-     id: UserId;
-     createdAt: Date;
-   };
-
-   // Bad
-   type Data = any;
-   ```
+### コード構造
+- 機能ごとのディレクトリ分割
+- 状態を持たない場合は関数を優先
+- 依存を最小化し、明示的に注入
 
 ### エラー処理
+- Result型による明示的なエラーハンドリング
+- 網羅的なエラーケース定義
+- エラーを値として扱う
 
-1. Result型の使用
-   ```ts
-   import { err, ok, Result } from "npm:neverthrow";
+## ブーメランタスク
 
-   type ApiError =
-     | { type: "network"; message: string }
-     | { type: "notFound"; message: string }
-     | { type: "unauthorized"; message: string };
+複雑な調査や検討が必要な場合、`<new_task>`ツールで作業を分離します。
 
-   async function fetchUser(id: string): Promise<Result<User, ApiError>> {
-     try {
-       const response = await fetch(`/api/users/${id}`);
-       if (!response.ok) {
-         switch (response.status) {
-           case 404:
-             return err({ type: "notFound", message: "User not found" });
-           case 401:
-             return err({ type: "unauthorized", message: "Unauthorized" });
-           default:
-             return err({
-               type: "network",
-               message: `HTTP error: ${response.status}`,
-             });
-         }
-       }
-       return ok(await response.json());
-     } catch (error) {
-       return err({
-         type: "network",
-         message: error instanceof Error ? error.message : "Unknown error",
-       });
-     }
-   }
-   ```
-
-2. エラー型の定義
-   - 具体的なケースを列挙
-   - エラーメッセージを含める
-   - 型の網羅性チェックを活用
-
-### 実装パターン
-
-1. 関数ベース（状態を持たない場合）
-   ```ts
-   // インターフェース
-   interface Logger {
-     log(message: string): void;
-   }
-
-   // 実装
-   function createLogger(): Logger {
-     return {
-       log(message: string): void {
-         console.log(`[${new Date().toISOString()}] ${message}`);
-       },
-     };
-   }
-   ```
-
-2. classベース（状態を持つ場合）
-   ```ts
-   interface Cache<T> {
-     get(key: string): T | undefined;
-     set(key: string, value: T): void;
-   }
-
-   class TimeBasedCache<T> implements Cache<T> {
-     private items = new Map<string, { value: T; expireAt: number }>();
-
-     constructor(private ttlMs: number) {}
-
-     get(key: string): T | undefined {
-       const item = this.items.get(key);
-       if (!item || Date.now() > item.expireAt) {
-         return undefined;
-       }
-       return item.value;
-     }
-
-     set(key: string, value: T): void {
-       this.items.set(key, {
-         value,
-         expireAt: Date.now() + this.ttlMs,
-       });
-     }
-   }
-   ```
-
-3. Adapterパターン（外部依存の抽象化）
-   ```ts
-   // 抽象化
-   type Fetcher = <T>(path: string) => Promise<Result<T, ApiError>>;
-
-   // 実装
-   function createFetcher(headers: Record<string, string>): Fetcher {
-     return async <T>(path: string) => {
-       try {
-         const response = await fetch(path, { headers });
-         if (!response.ok) {
-           return err({
-             type: "network",
-             message: `HTTP error: ${response.status}`,
-           });
-         }
-         return ok(await response.json());
-       } catch (error) {
-         return err({
-           type: "network",
-           message: error instanceof Error ? error.message : "Unknown error",
-         });
-       }
-     };
-   }
-
-   // 利用
-   class ApiClient {
-     constructor(
-       private readonly getData: Fetcher,
-       private readonly baseUrl: string,
-     ) {}
-
-     async getUser(id: string): Promise<Result<User, ApiError>> {
-       return await this.getData(`${this.baseUrl}/users/${id}`);
-     }
-   }
-   ```
-
-### 実装の選択基準
-
-1. 関数を選ぶ場合
-   - 単純な操作のみ
-   - 内部状態が不要
-   - 依存が少ない
-   - テストが容易
-
-2. classを選ぶ場合
-   - 内部状態の管理が必要
-   - 設定やリソースの保持が必要
-   - メソッド間で状態を共有
-   - ライフサイクル管理が必要
-
-3. Adapterを選ぶ場合
-   - 外部依存の抽象化
-   - テスト時のモック化が必要
-   - 実装の詳細を隠蔽したい
-   - 差し替え可能性を確保したい
-
-### 一般的なルール
-
-1. 依存性の注入
-   - 外部依存はコンストラクタで注入
-   - テスト時にモックに置き換え可能に
-   - グローバルな状態を避ける
-
-2. インターフェースの設計
-   - 必要最小限のメソッドを定義
-   - 実装の詳細を含めない
-   - プラットフォーム固有の型を避ける
-
-3. テスト容易性
-   - モックの実装を簡潔に
-   - エッジケースのテストを含める
-   - テストヘルパーを適切に分離
-
-4. コードの分割
-   - 単一責任の原則に従う
-   - 適切な粒度でモジュール化
-   - 循環参照を避ける
+使用例:
+```
+<new_task>
+<mode>domain-designer</mode>
+<message>タスクデータモデルの最適化検討</message>
+</new_task>

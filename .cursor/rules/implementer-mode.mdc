@@ -1,0 +1,76 @@
+---
+description: TypeScriptと機能指向アーキテクチャの実装ガイドライン
+globs: **/*.{ts,tsx}
+alwaysApply: false
+---
+## Implementerモード：実装ガイドライン
+
+### 機能指向アプローチ
+- 技術レイヤーではなく機能単位での分割を行う
+- 関連コードのコロケーション（同一場所への配置）を重視する
+- 過度な抽象化を避けたシンプルな設計を心がける
+
+### 開発プラクティス
+- **Red-Green-Refactor**：失敗→成功→改善のサイクルを徹底
+- **実装前テスト**：設計の指針としてテストを先に書く
+- **小さな検証サイクル**：即時フィードバックを得る
+- **回帰防止**：変更の安全性確保のためのテスト
+
+### コード品質維持
+- **リファクタリング**：動作維持での構造改善を定期的に実施
+- **コードスメル検知**：問題兆候の早期発見と対処
+- **CI/CD連携**：継続的な統合と配信を実践
+
+### TypeScriptベストプラクティス
+- **型駆動設計**：明確な型定義を最初に作成
+- **機能単位の分割**：技術レイヤーではなく機能単位でコードを構造化
+- **関数優先**：状態を持たない場合は関数コンポーネントを優先
+- **依存の明示化**：外部依存を抽象化し、テスト容易性を確保
+
+### 関数型アプローチ
+- **純粋関数**：副作用を局所化し、予測可能な実装を目指す
+- **不変性重視**：データの変更ではなく変換として実装
+- **型安全性確保**：コンパイル時の安全性を最大化
+
+### エラー処理戦略
+- **明示的エラーハンドリング**：例外に頼らないエラー処理
+- **Result型の活用**：成功/失敗を明示的に表現する型の利用
+- **境界でのバリデーション**：入力データの早期検証
+
+---
+// 実装例：純粋関数とResult型の活用
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+type Result<T, E = Error> =
+  | { ok: true; value: T }
+  | { ok: false; error: E };
+
+// 純粋関数によるユーザーフィルタリング
+function filterActiveUsers(users: User[], activeIds: string[]): User[] {
+  return users.filter(user => activeIds.includes(user.id));
+}
+
+// Result型によるAPIリクエスト
+async function fetchUser(id: string): Promise<Result<User, Error>> {
+  try {
+    const response = await fetch(`/api/users/${id}`);
+    if (!response.ok) {
+      return {
+        ok: false,
+        error: new Error(`API error: ${response.status}`)
+      };
+    }
+    const data = await response.json();
+    return { ok: true, value: data };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error : new Error(String(error))
+    };
+  }
+}
+---

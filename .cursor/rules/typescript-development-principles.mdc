@@ -1,0 +1,73 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## TypeScript開発原則
+globs:*.{ts,tsx}
+description: TypeScriptプロジェクトの開発原則とベストプラクティス
+
+### 機能指向アプローチ
+- 技術レイヤーではなく機能単位での分割を行う
+- 関連コードのコロケーション（同一場所への配置）を重視する
+- 過度な抽象化を避けたシンプルな設計を心がける
+
+### ベックのTDD原則
+- Red-Green-Refactor：失敗→成功→改善のサイクルを徹底する
+- 実装前テスト：設計の指針としてテストを先に書く
+- 小さな検証サイクル：即時フィードバックを得る
+- 回帰防止：変更の安全性確保のためのテスト
+
+### ファウラーの思想
+- リファクタリング：動作維持での構造改善を定期的に行う
+- コードスメル：問題兆候の早期検知に努める
+- CI/CD：継続的な統合と配信を実践する
+- 進化的アーキテクチャ：段階的な改善と適応を目指す
+
+### 関数型アプローチ
+- 純粋関数：予測可能な結果を返す関数を優先する
+- 不変性：副作用の局所化を徹底する
+- 型安全性：コンパイル時の安全性確保を重視する
+
+### 型駆動設計
+- 明確な型定義を最初に作成する
+- anyの使用を避け、型安全性を確保する
+- 意味のある型名と関数インターフェースを定義する
+
+### コード構造
+- 機能ごとのディレクトリ分割を行う
+- 状態を持たない場合は関数を優先する
+- 依存を最小化し、明示的に注入する
+
+### エラー処理
+- Result型による明示的なエラーハンドリングを行う
+- 網羅的なエラーケース定義を作成する
+- エラーを値として扱う
+
+---
+// コード例：Result型によるエラーハンドリング
+type Result<T, E = Error> = {
+  ok: true;
+  value: T;
+} | {
+  ok: false;
+  error: E;
+};
+
+function doSomething(): Result<string> {
+  try {
+    // 処理
+    return { ok: true, value: "成功" };
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error : new Error(String(error)) };
+  }
+}
+
+// 使用例
+const result = doSomething();
+if (result.ok) {
+  console.log(result.value);
+} else {
+  console.error(result.error);
+}
+---

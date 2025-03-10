@@ -1,0 +1,23 @@
+{
+  "appName": "jikanicle",
+  "repository": {
+    "dataDirectory": "./data",
+    "fileExtension": ".json"
+  },
+  "ui": {
+    "theme": {
+      "primaryColor": "blue",
+      "secondaryColor": "white"
+    },
+    "keyBindings": {
+      "CREATE_TASK": "c",
+      "EDIT_TASK": "e",
+      "DELETE_TASK": "d",
+      "COMPLETE_TASK": "x",
+      "VIEW_TASK": "v",
+      "LIST_TASKS": "l",
+      "HELP": "h",
+      "QUIT": "q"
+    }
+  }
+}

@@ -160,7 +160,7 @@ export default [
 
   // インフラストラクチャ層（特にアダプター）用の設定 - DDDアーキテクチャに合わせてルールを緩和
   {
-    files: ["src/infrastructure/adapters/**/*.ts"],
+    files: ["src/infrastructure/adapters/**/*.ts", "src/infrastructure/repositories/**/*.ts"],
     rules: {
       // 関数型プログラミングのルールを緩和
       "functional/no-let": "off",

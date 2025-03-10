@@ -2,12 +2,14 @@
  * jikanicle アプリケーションのエントリーポイント
  *
  * このファイルは、アプリケーションの起動ポイントです。
- * InMemoryタスクリポジトリを初期化し、TUIアプリケーションをレンダリングします。
+ * ファイルベースのタスクリポジトリを初期化し、TUIアプリケーションをレンダリングします。
  */
 
 import { render } from 'ink';
 import React from 'react';
-import { createInMemoryTaskRepository } from './infrastructure/repositories/in-memory-task-repository.js';
+import { createNodeFileSystemAdapter } from './infrastructure/adapters/node-fs-adapter.js';
+import { loadConfig } from './infrastructure/config/config-loader.js';
+import { createFileBasedTaskRepository } from './infrastructure/repositories/file-based-task-repository.js';
 import { App } from './ui/App.js';
 
 /**
@@ -21,9 +23,22 @@ async function main(_: void): Promise<void> {
   try {
     console.log('jikanicle を起動中...');
 
-    // InMemoryタスクリポジトリの初期化
-    // 将来的には設定やコマンドライン引数から、別のリポジトリを使用することも可能
-    const taskRepository = createInMemoryTaskRepository();
+    // 設定の読み込み
+    const configResult = await loadConfig();
+
+    // 関数型プログラミング原則に従ったエラー処理
+    const config = configResult.match(
+      (config) => config,
+      (error) => {
+        console.error(`設定の読み込みに失敗しました: ${error.message}`);
+        process.exit(1);
+        return null as never; // ここには到達しない
+      },
+    );
+
+    // ファイルシステムアダプタとファイルベースリポジトリの初期化
+    const fs = createNodeFileSystemAdapter();
+    const taskRepository = createFileBasedTaskRepository(fs, { dataDir: config.repository.dataDirectory });
 
     // Appコンポーネントのレンダリング
     const { waitUntilExit } = render(

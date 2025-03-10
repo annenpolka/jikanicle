@@ -7,7 +7,7 @@ export default defineConfig({
     globals: true,
 
     // テスト対象のファイルパターン
-    include: ['src/**/*.{test,spec}.{js,ts}', 'test/**/*.{test,spec}.{js,ts}'],
+    include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}', 'test/**/*.{test,spec}.{js,ts,jsx,tsx}'],
 
     // 型テストの設定
     typecheck: {
@@ -19,7 +19,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8', // V8カバレッジプロバイダーを使用
       reporter: ['text', 'html', 'json'],
-      include: ['src/**/*.ts'], // カバレッジ対象
+      include: ['src/**/*.{ts,tsx}'], // カバレッジ対象
       exclude: ['**/*.test.ts', '**/*.test-d.ts'], // カバレッジから除外
     },
 

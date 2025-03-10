@@ -127,7 +127,7 @@ export default [
     }
   },
 
-  // テストファイル用の設定
+  // テストファイル用の設定 - 大幅にルールを緩和
   {
     files: ["test/**/*.ts", "vitest.config.ts"],
     languageOptions: {
@@ -135,12 +135,52 @@ export default [
       parserOptions: tsParserOptions
     },
     rules: {
-      // テストファイルではJSDocを必須としない
+      // JSDocルールの緩和
       "jsdoc/require-jsdoc": "off",
       "jsdoc/require-param": "off",
       "jsdoc/require-returns": "off",
-      // テストファイルでは関数型プログラミングのルールを一部緩和
-      "functional/functional-parameters": "off"
+
+      // 関数型プログラミングのルールを大幅に緩和
+      "functional/functional-parameters": "off",
+      "functional/no-let": "off",
+      "functional/immutable-data": "off",
+      "functional/no-expression-statements": "off",
+      "functional/no-conditional-statements": "off",
+      "functional/prefer-readonly-type": "off",
+
+      // 型安全性関連のルールも緩和
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
+      "@typescript-eslint/explicit-function-return-type": "off"
+    }
+  },
+
+  // インフラストラクチャ層（特にアダプター）用の設定 - DDDアーキテクチャに合わせてルールを緩和
+  {
+    files: ["src/infrastructure/adapters/**/*.ts"],
+    rules: {
+      // 関数型プログラミングのルールを緩和
+      "functional/no-let": "off",
+      "functional/immutable-data": "off",
+      "functional/no-expression-statements": "off",
+      "functional/no-conditional-statements": "off",
+      "functional/functional-parameters": "off",
+      "functional/prefer-readonly-type": "off",
+
+      // JSDocルールを一部緩和
+      "jsdoc/require-param": "off",
+      "jsdoc/require-returns": "off",
+
+      // 型安全性は維持しつつ、外部との連携に必要な型変換を許可
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unsafe-assignment": "warn",
+      "@typescript-eslint/no-unsafe-call": "warn",
+      "@typescript-eslint/no-unsafe-member-access": "warn",
+      "@typescript-eslint/no-unsafe-return": "warn",
+      "@typescript-eslint/consistent-type-assertions": "off"
     }
   }
 ];

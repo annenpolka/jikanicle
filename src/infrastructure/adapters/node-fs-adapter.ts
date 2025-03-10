@@ -425,10 +425,16 @@ export function createNodeFileSystemAdapter(): FileSystemAdapter {
 
           const pump = async (): Promise<void> => {
             try {
-              const { done, value } = await reader.read();
+              const { done, value } = await reader.read() as { done: boolean; value: Uint8Array | undefined };
 
               if (done) {
                 writer.end();
+                return;
+              }
+
+              if (value === undefined) {
+                // 関数型プログラミングでは例外を投げずにエラーを値として扱う
+                resolve(err(handleFsError('ストリームから読み込まれた値がundefinedです', filePath)));
                 return;
               }
 

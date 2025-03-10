@@ -266,14 +266,16 @@ export function createMockFileSystemAdapter(
 
         // ストリームからすべてのチャンクを読み込む
         for (;;) {
-          const { done, value } = await reader.read();
+          const { done, value } = await reader.read() as { done: boolean; value: Uint8Array | undefined };
           if (done) break;
-          chunks.push(value);
+          if (value !== undefined) {
+            chunks.push(value);
+          }
         }
 
         // チャンクを結合してデコード
-        const concatenated = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
-        let offset = 0;
+        const totalLength = chunks.reduce((acc: number, chunk) => acc + chunk.length, 0);
+        const concatenated = new Uint8Array(totalLength);        let offset = 0;
         for (const chunk of chunks) {
           concatenated.set(chunk, offset);
           offset += chunk.length;

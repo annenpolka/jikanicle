@@ -45,6 +45,9 @@ Thumbs.db
 # カバレッジレポート
 coverage/
 
+# タスクファイル
+data/
+
 # その他
 .temp/
 .tmp/

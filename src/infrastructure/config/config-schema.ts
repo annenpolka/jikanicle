@@ -10,11 +10,9 @@ import { z } from 'zod';
  * リポジトリ設定のスキーマ
  */
 export const REPOSITORY_CONFIG_SCHEMA = z.object({
-  /** ファイルリポジトリの設定 */
-  /** タスクデータを保存するディレクトリパス */
+  /** JSONファイルリポジトリの設定 */
+  /** タスクデータ（JSON形式）を保存するディレクトリパス */
   dataDirectory: z.string().default('./data'),
-  /** データファイルの拡張子 */
-  fileExtension: z.string().default('.json'),
 
   /** 将来の拡張のための追加設定エリア */
   options: z.record(z.unknown()).optional()
@@ -82,7 +80,6 @@ export const APP_CONFIG_SCHEMA = z.object({
   /** リポジトリ設定 */
   repository: REPOSITORY_CONFIG_SCHEMA.default({
     dataDirectory: './data',
-    fileExtension: '.json'
   }),
 
   /** UI設定 */
@@ -112,8 +109,7 @@ export type AppConfig = z.infer<typeof APP_CONFIG_SCHEMA>;
 export const DEFAULT_CONFIG: AppConfig = {
   appName: 'Jikanicle',
   repository: {
-    dataDirectory: './data',
-    fileExtension: '.json'
+    dataDirectory: './data'
   },
   ui: {
     theme: 'system',

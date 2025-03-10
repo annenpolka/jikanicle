@@ -22,7 +22,7 @@ export const createTaskParamsSchema = z.object({
   name: z.string().min(1, { message: 'タスク名は必須です' }),
   estimatedDuration: z.number().nonnegative({ message: '予測時間は0以上である必要があります' }),
   category: categorySchema,
-  id: taskIdSchema.optional(),
+  id: z.union([taskIdSchema, z.undefined()]).optional(),
   description: z.string().optional().default(''),
   status: taskStatusSchema.optional().default('NOT_STARTED'),
   priority: prioritySchema.optional().default('MEDIUM'),

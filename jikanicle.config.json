@@ -1,8 +1,7 @@
 {
   "appName": "jikanicle",
   "repository": {
-    "dataDirectory": "./data",
-    "fileExtension": ".json"
+    "dataDirectory": "./data"
   },
   "ui": {
     "theme": {

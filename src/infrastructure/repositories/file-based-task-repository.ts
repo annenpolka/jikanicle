@@ -37,12 +37,12 @@ import {
  */
 export type FileBasedTaskRepositoryOptions = {
   /**
-   * タスクデータを保存するディレクトリのパス
+   * タスクデータを保存するディレクトリのパス（JSONファイル用）
    */
   readonly dataDir: string;
   /**
    * インデックスファイルの名前
-   * すべてのタスクIDとメタデータを保持するファイル
+   * すべてのタスクIDとメタデータを保持するJSONファイル
    */
   readonly indexFileName?: string;
 };
@@ -112,10 +112,18 @@ function mapDeserializationError(error: DeserializationError): TaskRepositoryErr
  *
  * @param dataDir データディレクトリ
  * @param taskId タスクID
- * @returns タスクファイルの完全パス
+ * @returns タスクファイルパスを含むResult、不正なIDの場合はエラー
  */
-function getTaskFilePath(dataDir: string, taskId: TaskId): string {
-  return path.join(dataDir, `${taskId}.json`);
+function getTaskFilePath(dataDir: string, taskId: TaskId): Result<string, FileSystemError> {
+  // 空文字列や無効なIDをチェック
+  if (typeof taskId !== 'string' || taskId.length === 0) {
+    return err({
+      type: 'INVALID_PATH',
+      message: `無効なタスクID: [${taskId}]`,
+      path: `${dataDir}/${taskId}.json`
+    });
+  }
+  return ok(path.join(dataDir, `${taskId}.json`));
 }
 
 /**
@@ -210,7 +218,12 @@ export function createFileBasedTaskRepository(
      * @returns 成功時: タスクオブジェクト、失敗時: エラーオブジェクト
      */
     async findById(id: TaskId): Promise<Result<Task, TaskRepositoryError>> {
-      const filePath = getTaskFilePath(dataDir, id);
+      // ファイルパスの生成
+      const filePathResult = getTaskFilePath(dataDir, id);
+      if (filePathResult.isErr()) {
+        return err(mapFileSystemError(filePathResult.error));
+      }
+      const filePath = filePathResult.value;
 
       // ファイルの読み込み
       const fileResult = await fs.readFile(filePath);
@@ -249,7 +262,8 @@ export function createFileBasedTaskRepository(
 
       // 各ファイルからタスクを読み込み
       const taskPromises = taskFiles.map(async (filePath): Promise<Result<Task | null, TaskRepositoryError>> => {
-        const fileResult = await fs.readFile(filePath);
+        const fullPath = path.join(dataDir, filePath);
+        const fileResult = await fs.readFile(fullPath);
         if (fileResult.isErr() === true) {
           return err(mapFileSystemError(fileResult.error));
         }
@@ -313,8 +327,12 @@ export function createFileBasedTaskRepository(
         return err(mapSerializationError(serializeResult.error));
       }
 
-      // ファイルパスの生成
-      const filePath = getTaskFilePath(dataDir, task.id);
+      // タスクIDの検証とファイルパスの生成
+      const filePathResult = getTaskFilePath(dataDir, task.id);
+      if (filePathResult.isErr()) {
+        return err(mapFileSystemError(filePathResult.error));
+      }
+      const filePath = filePathResult.value;
 
       // タスクをファイルに書き込み（アトミック操作を使用）
       const writeResult = await fs.writeFile(filePath, serializeResult.value);
@@ -331,7 +349,12 @@ export function createFileBasedTaskRepository(
      * @returns 成功時: void、失敗時: エラーオブジェクト
      */
     async delete(id: TaskId): Promise<Result<void, TaskRepositoryError>> {
-      const filePath = getTaskFilePath(dataDir, id);
+      // ファイルパスの生成
+      const filePathResult = getTaskFilePath(dataDir, id);
+      if (filePathResult.isErr()) {
+        return err(mapFileSystemError(filePathResult.error));
+      }
+      const filePath = filePathResult.value;
 
       // ファイルの存在確認
       const existsResult = await fs.fileExists(filePath);

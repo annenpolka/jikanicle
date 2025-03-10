@@ -155,14 +155,8 @@ export const App: React.FC<AppProps> = ({ taskRepository, testID = 'app' }) => {
 
   // タスク作成処理
   const handleCreateTask = (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
-    // ストア用のタスクオブジェクト生成
-    const task: Task = {
-      ...taskData,
-      id: '' as unknown as TaskId, // 仮の値（ストア内で生成される）
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    void store.getState().createTask(task);
+    // ストアに必要なパラメータのみを渡し、ID生成はドメイン層に任せる
+    void store.getState().createTask(taskData);
     setMode('list');
   };
 

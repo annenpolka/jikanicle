@@ -9,9 +9,10 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
 import type { StoreApi } from 'zustand';
-import type { Task, TaskId } from '../../../domain/types/Task.js';
+import type { CreateTaskParams, Task, TaskId } from '../../../domain/types/Task.js';
 import type { TaskRepository, TaskFilter, TaskRepositoryError } from '../../../application/repositories/task-repository.js';
 import type { AsyncState, StoreError, FilterState, SortState, StoreState, StoreActions } from '../types.js';
+import { createTask } from '../../../domain/factories/task-factory.js';
 
 /**
  * タスクUIフィルターの型定義
@@ -45,7 +46,7 @@ export type TaskStoreState = StoreState & AsyncState & {
 export type TaskStoreActions = StoreActions & {
   // データ操作アクション
   readonly fetchTasks: (filter?: TaskFilter) => Promise<void>;
-  readonly createTask: (task: Task) => Promise<void>;
+  readonly createTask: (taskParams: Omit<CreateTaskParams, 'id'>) => Promise<void>;
   readonly updateTask: (task: Task) => Promise<void>;
   readonly deleteTask: (taskId: TaskId) => Promise<void>;
 
@@ -133,8 +134,13 @@ export const createTaskStore = (taskRepository: TaskRepository): StoreApi<TaskSt
           }
         },
 
-        createTask: async (task) => {
+        createTask: async (taskParams) => {
           set({ loading: true, error: null });
+
+          // ドメイン層のファクトリ関数でタスクを生成
+          const task = createTask(taskParams);
+
+          // リポジトリに保存
           const result = await taskRepository.save(task);
 
           if (result.isOk()) {

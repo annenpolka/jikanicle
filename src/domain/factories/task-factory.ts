@@ -16,7 +16,7 @@ export function createTask(params: CreateTaskParams): Task {
 
   // タスクオブジェクトの作成
   const task: Task = {
-    id: validParams.id ?? createTaskId(uuidv4()),
+    id: validParams.id && validParams.id.length > 0 ? validParams.id : createTaskId(uuidv4()),
     name: validParams.name,
     description: validParams.description,
     status: validParams.status,

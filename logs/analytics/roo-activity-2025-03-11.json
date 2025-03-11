@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1187b9d6-e890-41c8-919c-00b0c3a22643",
+    "timestamp": "2025-03-11T04:17:22.142Z",
+    "type": "code_generation",
+    "level": "info",
+    "summary": "ログディレクトリ構造のテスト - 分析ログ",
+    "details": {
+      "statistics": {
+        "linesOfCode": 1250,
+        "filesModified": 3,
+        "testCoverage": 85.4
+      },
+      "performance": {
+        "compilationTime": "2.3s",
+        "executionTime": "0.8s"
+      }
+    },
+    "intention": "新しいログディレクトリ構造で分析ログが適切に保存されるかの検証",
+    "context": "ログディレクトリ構造を変更後の分析データテスト"
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "cd7299a1-b41c-4553-8f80-114f4490a5c4",
+    "timestamp": "2025-03-11T04:16:59.607Z",
+    "type": "error_encountered",
+    "level": "error",
+    "summary": "ログディレクトリ構造のテスト - エラーログ",
+    "details": {
+      "errorType": "SystemConfigError",
+      "message": "これはテスト用のエラーログです",
+      "filePath": "test-file.ts",
+      "lineNumber": 123
+    },
+    "intention": "新しいログディレクトリ構造でエラーログが適切に保存されるかの検証",
+    "context": "ログディレクトリ構造を変更後、各ログレベルが適切なディレクトリに保存されるか確認するテスト"
+  }
+]

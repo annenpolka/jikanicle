@@ -1,0 +1,15 @@
+# Jikanicleプロジェクトの.rooignoreファイル
+# .gitignoreと同様の構文で、Rooが無視すべきファイルを指定します
+
+# deprecatedディレクトリ全体を無視
+_deprecated/
+*/*-deprecated/
+*/*-deprecated/**/*
+
+# 他の一般的な無視ファイル
+node_modules/
+.DS_Store
+*.log
+dist/
+build/
+coverage/

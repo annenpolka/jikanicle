@@ -2,13 +2,13 @@
 
 ## 概要
 
-このディレクトリには、jicanicleプロジェクトの旧設計アプローチに基づく設定ファイルが含まれています。これらの設定ファイルは2025年3月10日に行われたリブート検討の結果、DDDアプローチから軽量進化型アプローチへの移行に伴いdeprecatedとなりました。
+このディレクトリには、jikanicleプロジェクトの旧設計アプローチに基づく設定ファイルが含まれています。これらの設定ファイルは2025年3月10日に行われたリブート検討の結果、DDDアプローチから軽量進化型アプローチへの移行に伴いdeprecatedとなりました。
 
 ## 含まれるファイル
 
 - `babel.config.json` - Babel設定ファイル
 - `eslint.config.mjs` - ESLint設定ファイル
-- `jikanicle.config.json` - jicanicleアプリケーション設定
+- `jikanicle.config.json` - jikanicleアプリケーション設定
 - `package.json` / `package-lock.json` / `pnpm-lock.yaml` - パッケージ管理ファイル
 - `tsconfig.json` - TypeScript設定
 - `vitest.config.ts` - Vitest（テストランナー）設定

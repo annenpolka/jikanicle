@@ -1,0 +1,2 @@
+*.golden -text
+internal/ui/testdata/golden/* -text

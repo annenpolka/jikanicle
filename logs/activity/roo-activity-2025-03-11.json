@@ -15,5 +15,157 @@
     },
     "intention": "エラーとその他のログを体系的に分類するためのディレクトリ構造と指示を整備",
     "context": "エラーログとアクティビティログの保存場所を明確化し、分析のためのログも整理できるように"
+  },
+  {
+    "id": "484b18a2-7937-4e35-9f04-732832784b1f",
+    "timestamp": "2025-03-11T05:35:56.685Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "TUIライブラリとしてbubbletea+lipglossの技術選定調査開始",
+    "details": {
+      "libraries": [
+        "bubbletea",
+        "lipgloss"
+      ],
+      "task": "技術選定の詳細調査"
+    },
+    "intention": "TUIライブラリの技術選定についての詳細な調査と理解を深めるため",
+    "context": "Jikanicleプロジェクトでのターミナルユーザーインターフェース実装に向けた技術選定フェーズ"
+  },
+  {
+    "id": "a5f75f2b-4ef6-4ea6-aa60-253f2d73a09d",
+    "timestamp": "2025-03-11T05:36:21.198Z",
+    "type": "conversation",
+    "level": "info",
+    "summary": "BubbleteaとLipglossなどのTUIライブラリの比較分析開始",
+    "details": {
+      "libraries": [
+        "Bubbletea",
+        "Lipgloss",
+        "Ink",
+        "Blessed",
+        "terminal-kit"
+      ],
+      "analysis_aspects": [
+        "特徴",
+        "使用方法",
+        "利点と欠点",
+        "TypeScript対応",
+        "実装パターン",
+        "比較"
+      ]
+    },
+    "intention": "ユーザーが要求したTUIライブラリの詳細な比較分析を行うため、情報収集を開始します",
+    "context": "機能指向アーキテクチャとTypeScriptでの実装に焦点を当てた分析が必要"
+  },
+  {
+    "id": "423fd191-b84a-4228-8e7d-751ec9700459",
+    "timestamp": "2025-03-11T05:38:42.901Z",
+    "type": "conversation",
+    "level": "info",
+    "summary": "TUIライブラリ（Bubbletea、Lipgloss、Ink等）の比較分析情報を収集完了",
+    "details": {
+      "libraries": [
+        "Bubbletea",
+        "Lipgloss",
+        "Ink",
+        "Blessed",
+        "terminal-kit",
+        "Textual"
+      ],
+      "collected_info": [
+        "基本特徴",
+        "TypeScript対応",
+        "実装パターン",
+        "比較分析"
+      ],
+      "sources": [
+        "GitHub",
+        "perplexity"
+      ]
+    },
+    "intention": "収集した情報を整理して包括的な比較分析を行うため",
+    "context": "機能指向アーキテクチャとTypeScriptでの実装に焦点を当てた分析作成の準備"
+  },
+  {
+    "id": "2d2ff64c-5d8d-4407-9aed-96bc4be70672",
+    "timestamp": "2025-03-11T05:42:13.548Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ブーメランタスクからの情報を基にBubbletea+Lipglossの技術選定レポート作成を開始",
+    "details": {
+      "source": "ブーメランタスク調査結果",
+      "libraries": [
+        "bubbletea",
+        "lipgloss"
+      ],
+      "alternatives": [
+        "Ink",
+        "Blessed",
+        "Terminal-kit"
+      ]
+    },
+    "intention": "TUIライブラリ選定の根拠を明確化し、TypeScriptプロジェクトでの実装戦略を策定するため",
+    "context": "技術選定のための詳細調査フェーズ"
+  },
+  {
+    "id": "f6638f8e-e444-43c1-9713-b7de2833e8ee",
+    "timestamp": "2025-03-11T05:42:35.255Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "TypeScriptを使用せず、Goベースでbubbletea+lipglossを採用",
+    "details": {
+      "platform": "Go",
+      "libraries": [
+        "bubbletea",
+        "lipgloss"
+      ],
+      "decision": "TypeScriptからGoへの言語変更"
+    },
+    "intention": "GoのTUIライブラリであるbubbletea+lipglossの特性を最大限に活用するため",
+    "context": "Jikanicleプロジェクトのターミナルユーザーインターフェース実装に向けた技術選定"
+  },
+  {
+    "id": "b05e721c-34fb-4c16-9a82-5b55d0ec1d79",
+    "timestamp": "2025-03-11T05:46:01.626Z",
+    "type": "code_generation",
+    "level": "info",
+    "summary": "Bubbletea+Lipglossの技術選定調査結果とレポート作成",
+    "details": {
+      "technologies": [
+        "Go",
+        "Bubbletea",
+        "Lipgloss"
+      ],
+      "researchFindings": {
+        "architecture": "The Elm Architecture (TEA)",
+        "strengths": [
+          "状態管理の堅牢性",
+          "Goの高速パフォーマンス",
+          "スタイリングの柔軟性"
+        ],
+        "implementation": "機能指向アプローチでの実装パターン"
+      }
+    },
+    "intention": "Jikanicleプロジェクトの技術選定根拠を明確にし、開発方針を策定するため",
+    "context": "TUIライブラリ選択フェーズでの技術評価"
+  },
+  {
+    "id": "56aa4066-aa15-4516-9d48-ac3897e4bcc8",
+    "timestamp": "2025-03-11T05:48:03.406Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Bubble Tea + Lip Gloss技術選定レポート完成",
+    "details": {
+      "technologies": [
+        "Go",
+        "Bubble Tea",
+        "Lip Gloss"
+      ],
+      "documentPath": "docs/project/tech-decisions/bubbletea-lipgloss-selection.md",
+      "conclusion": "Jikanicleプロジェクトの機能指向アーキテクチャに最適なTUIライブラリとしてBubble Tea + Lip Glossを選定"
+    },
+    "intention": "技術選定の理由と実装アプローチを文書化し、次の開発フェーズへの準備を整えるため",
+    "context": "TUIライブラリ選定と実装戦略の策定フェーズ"
   }
 ]

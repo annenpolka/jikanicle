@@ -1,0 +1,15 @@
+[
+  {
+    "id": "239c8475-e3bf-497a-bdf4-8c34869054d8",
+    "timestamp": "2025-03-13T15:50:15.399Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "roo-loggerスキーマに親子関係とシーケンス関係の追加を検討開始",
+    "details": {
+      "task": "roo-loggerスキーマにparentIdとsequenceフィールド追加の検討",
+      "approach": "現状の型定義を確認し、拡張方法を検討する"
+    },
+    "intention": "機能拡張のための設計検討を記録",
+    "context": "機能追加により、ログの関連性とシーケンスを追跡できるようにする"
+  }
+]

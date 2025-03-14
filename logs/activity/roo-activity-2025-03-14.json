@@ -11,5 +11,75 @@
     },
     "intention": "機能拡張のための設計検討を記録",
     "context": "機能追加により、ログの関連性とシーケンスを追跡できるようにする"
+  },
+  {
+    "id": "334740aa-85a1-47a2-bb3a-4ca9ee784906",
+    "timestamp": "2025-03-14T01:08:04.114Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "README.mdの改善",
+    "details": {
+      "file": "roo-logger/README.md",
+      "operation": "update",
+      "reason": "機能の呼び出し方をよりわかりやすく記述するため"
+    },
+    "intention": "ドキュメントの使いやすさを向上させる",
+    "context": "特にsearch_logsのパラメータの任意性を明確にする"
+  },
+  {
+    "id": "7e1cf25b-6da5-4718-ae6b-1ea376b49f69",
+    "timestamp": "2025-03-14T01:11:19.815Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "README.mdの改善完了",
+    "details": {
+      "file": "roo-logger/README.md",
+      "operation": "update",
+      "changes": "MCPツールの使用方法を表形式で整理し、使用例を追加。特にsearch_logsのパラメータの任意性を明確化。"
+    },
+    "intention": "ドキュメントの使いやすさを向上させる",
+    "context": "実装コードと整合性を取りながら、各機能の呼び出し方をより明確にした"
+  },
+  {
+    "id": "ce499ca4-bb5e-446c-89fa-9590e5e66f9c",
+    "timestamp": "2025-03-14T01:15:47.399Z",
+    "type": "code_generation",
+    "level": "info",
+    "summary": "log_activityツールのintentionとcontextパラメータを必須化",
+    "details": {
+      "files": [
+        "roo-logger/src/types.ts",
+        "roo-logger/src/index.ts",
+        "roo-logger/README.md"
+      ],
+      "changes": [
+        "LogActivityArgs型定義でintentionとcontextを必須パラメータに変更",
+        "スキーマのrequiredリストにintentionとcontextを追加",
+        "READMEを更新して必須パラメータを明示"
+      ]
+    },
+    "intention": "活動の目的と文脈の記録を必須にして、より良いトレーサビリティを確保するため",
+    "context": "ログ記録の質を向上させるための改修の一環として"
+  },
+  {
+    "id": "cda65412-3421-4a0e-8531-298b19273721",
+    "timestamp": "2025-03-14T01:24:52.722Z",
+    "type": "code_generation",
+    "level": "info",
+    "summary": "roo-loggerのツール説明とプロパティ説明の詳細化",
+    "details": {
+      "file": "roo-logger/src/index.ts",
+      "changedElements": [
+        "ツール説明（description）",
+        "各プロパティの説明文"
+      ],
+      "improvementPoints": [
+        "具体的な使用例の追加",
+        "パラメータの使用シナリオの説明",
+        "階層関係と関連性の詳細説明"
+      ]
+    },
+    "intention": "APIの使いやすさと理解しやすさを向上させるため",
+    "context": "READMEに記載されている詳細情報をソースコード内のドキュメントにも反映し、開発者体験を向上させる作業として"
   }
 ]

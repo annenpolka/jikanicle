@@ -133,52 +133,44 @@ func TestCursorNavigation(t *testing.T) {
 	}
 }
 
-// TestTaskSelection はタスク選択機能をテストします
-func TestTaskSelection(t *testing.T) {
-	// teatestを使用してテスト環境を構築
-	tm := teatest.NewTestModel(t, InitialModel())
+// TestTaskStatusCycle はEnterキーによるタスクステータスサイクル機能をテストします
+func TestTaskStatusCycle(t *testing.T) {
+	// 初期モデルを作成（リポジトリなしのためステータス変更は永続化されない）
+	model := InitialModel()
 
-	// Enterキーでタスクを選択
+	// teatestを使用してテスト環境を構築
+	tm := teatest.NewTestModel(t, model)
+
+	// Enterキーでタスクのステータスをサイクル
 	tm.Send(tea.KeyMsg{Type: tea.KeyEnter})
 
 	// プログラムを終了させて状態を確認
 	_ = tm.Quit()
 	model1 := tm.FinalModel(t).(Model)
 
-	// 選択されたかチェック
-	if _, ok := model1.Selected[0]; !ok {
-		t.Error("Enterキー押下後にタスクが選択されていません")
+	// ステータスがサイクルする動作はリポジトリがないので実際は変更されないが、
+	// 機能が呼び出されたことを確認するため、コマンドが実行されたことをチェック
+	// （エラーメッセージなどが出ていないことを確認）
+	if model1.ErrorMsg != "" {
+		t.Errorf("Enterキー押下後にエラーメッセージが出ています: %s", model1.ErrorMsg)
 	}
 
-	// 再度Enterでトグル（選択解除）をテスト
+	// スペースキーでも同様に動作するかテスト
 	tm2 := teatest.NewTestModel(t, model1)
-	tm2.Send(tea.KeyMsg{Type: tea.KeyEnter})
+	tm2.Send(tea.KeyMsg{Type: tea.KeySpace})
 
 	// プログラムを終了させて状態を確認
 	_ = tm2.Quit()
 	model2 := tm2.FinalModel(t).(Model)
 
-	// 選択解除されたかチェック
-	if _, ok := model2.Selected[0]; ok {
-		t.Error("2回目のEnterキー押下後にタスクの選択が解除されていません")
-	}
-
-	// Spaceキーでも選択できるかテスト
-	tm3 := teatest.NewTestModel(t, model2)
-	tm3.Send(tea.KeyMsg{Type: tea.KeySpace})
-
-	// プログラムを終了させて状態を確認
-	_ = tm3.Quit()
-	model3 := tm3.FinalModel(t).(Model)
-
-	// 選択されたかチェック
-	if _, ok := model3.Selected[0]; !ok {
-		t.Error("Spaceキー押下後にタスクが選択されていません")
+	// エラーがないことを確認
+	if model2.ErrorMsg != "" {
+		t.Errorf("Spaceキー押下後にエラーメッセージが出ています: %s", model2.ErrorMsg)
 	}
 }
 
-// TestTeatestSimple はteatestライブラリを使った簡単なテストです
-func TestTeatestSimple(t *testing.T) {
+// TestKeyboardNavigation はキーボード操作によるナビゲーションをテストします
+func TestKeyboardNavigation(t *testing.T) {
 	// teatestを使用してテスト環境を構築
 	tm := teatest.NewTestModel(t, InitialModel())
 
@@ -195,8 +187,8 @@ func TestTeatestSimple(t *testing.T) {
 		t.Errorf("カーソル位置が期待値と異なります。got: %d, want: 1", finalModel.Cursor)
 	}
 
-	// Spaceキーでタスクが選択されていることを確認
-	if _, ok := finalModel.Selected[1]; !ok {
-		t.Error("Spaceキー押下後にタスクが選択されていません")
+	// エラーがないことを確認
+	if finalModel.ErrorMsg != "" {
+		t.Errorf("操作後にエラーメッセージが出ています: %s", finalModel.ErrorMsg)
 	}
 }

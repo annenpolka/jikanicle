@@ -68,4 +68,4 @@ data/
 .tmp/
 .sass-cache/
 .turbo
-tsconfig.tsbuildinfo
+jikanicle

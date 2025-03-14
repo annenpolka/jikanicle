@@ -1,0 +1,34 @@
+[
+  {
+    "id": "ac118898-73e1-425c-88b1-54083dcd0d94",
+    "timestamp": "2025-03-14T03:18:38.194Z",
+    "type": "error_encountered",
+    "level": "info",
+    "summary": "TaskSchedulerにおけるエラーケースの分析と対策",
+    "details": {
+      "potential_errors": [
+        {
+          "scenario": "不正な可処分時間（0以下）の指定",
+          "handling": "NewTaskSchedulerでエラー返却、early return"
+        },
+        {
+          "scenario": "重複IDのタスク追加",
+          "handling": "AddTaskでID重複チェックとエラー返却"
+        },
+        {
+          "scenario": "存在しないタスクの削除",
+          "handling": "RemoveTaskでタスク存在確認とエラー返却"
+        },
+        {
+          "scenario": "時間超過状態の検出",
+          "handling": "IsOverAllocatedによる状態チェック可能性提供"
+        }
+      ],
+      "error_prevention": "早期検証（early validation）パターンの適用",
+      "error_messages": "具体的なエラー内容を明示するメッセージ設計",
+      "design_decisions": "値としてのエラー（error as values）パターンの採用"
+    },
+    "intention": "エラーケースの事前検証と対策状況の確認",
+    "context": "実装されたエラーハンドリングの設計原則と網羅性の確認"
+  }
+]

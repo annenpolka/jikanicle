@@ -1,3 +1,4 @@
+（没ネタであり、ほぼ未実装です）
 # Jikanicle
 
 Jikanicleは、Go言語と[Bubble Tea](https://github.com/charmbracelet/bubbletea)ライブラリを用いたターミナルベースのタスク管理・スケジュール管理アプリケーションです。

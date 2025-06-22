@@ -69,3 +69,5 @@ data/
 .sass-cache/
 .turbo
 /jikanicle
+
+**/.claude/settings.local.json

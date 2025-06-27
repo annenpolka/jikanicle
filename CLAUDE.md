@@ -4,96 +4,95 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロジェクト概要
 
-Jikanicleは、Go言語とBubble Teaライブラリを用いたターミナルベースのタスク管理・スケジュール管理アプリケーションです。DDD（ドメイン駆動設計）アプローチとThe Elm Architecture（TEA）パターンを採用しています。
+Jikanicleは、TypeScriptとInkライブラリ（React）を用いたターミナルベースのタスク管理・スケジュール管理アプリケーションです。DDD（ドメイン駆動設計）アプローチとスキーマ駆動開発を採用しています。
 
 ## 開発コマンド
 
 ### ビルドコマンド
 ```bash
-# ソースからのビルド（プロジェクトルートで実行）
-go build -o jikanicle ./cmd/jikanicle
+# TypeScriptのビルド
+npm run build
+```
 
-# コンパイルせずに直接実行
-go run ./cmd/jikanicle/main.go
+### 実行コマンド
+```bash
+# アプリケーションの起動
+npm start
 
-# ビルド済みバイナリを実行
-./jikanicle
+# 開発モードでの起動（ファイル変更時に自動リロード）
+npm run dev
 ```
 
 ### テストコマンド
 ```bash
 # 全てのテストを実行
-go test ./...
+npm test
 
-# 特定のパッケージのテストのみを実行
-go test ./internal/domain/task
-go test ./internal/domain/schedule
-go test ./internal/ui
+# テストを一度だけ実行
+npm run test:run
 
 # カバレッジレポートを出力
-go test ./... -coverprofile=coverage.out
+npm run test:coverage
 
-# カバレッジレポートをブラウザで表示
-go tool cover -html=coverage.out
+# 型チェックのみ実行
+npm run test:typecheck
 ```
 
-### 開発用コマンド
+### リンター
 ```bash
-# 依存関係の管理
-go mod tidy
+# ESLintでコードをチェック
+npm run lint
 
-# Go環境情報の確認
-go version
-go env
+# ESLintでコードを自動修正
+npm run lint:fix
 ```
 
 ## アーキテクチャ構成
 
 ### ディレクトリ構造
-- `cmd/jikanicle/`: エントリーポイント（main.go）
-- `internal/`: 内部実装
-  - `domain/`: ドメインロジック（task、schedule、timeblock）
-  - `ui/`: Bubble TeaベースのUIレイヤー
-  - `app/`: アプリケーション層（未実装）
+- `src/`: ソースコード
+  - `domain/`: ドメインロジック（エンティティ、値オブジェクト、ドメインサービス）
+  - `application/`: ユースケース層（アプリケーションサービス、リポジトリインターフェース）
+  - `infrastructure/`: インフラストラクチャ層（リポジトリ実装、外部サービス連携）
+  - `ui/`: UI層（Inkコンポーネント、フック、状態管理）
+- `test/`: テストコード
 - `docs/`: プロジェクト関連ドキュメント
-- `_deprecated/`: 廃止されたTypeScript実装
-- `logs/`: アクティビティログ
+- `dist/`: ビルド後の出力先
 
 ### ドメインモデル
-- **Task**: タスクエンティティ（Status: NotStarted/InProgress/Completed、Category: Work/Personal/Growth/Misc）
-- **Schedule**: 日次スケジュール管理
-- **TimeBlock**: 時間ブロック単位での管理
+- **Task**: タスクエンティティ（Zodスキーマで定義）
+- **KeyBinding**: キーバインドのドメインモデル
+- **Result**: neverthrowを使用したエラーハンドリング
 
 ### Repository パターン
-各ドメインでJSONファイルベースのリポジトリを実装:
-- `task.Repository`: タスク永続化インターフェース
-- `task.JSONRepository`: JSONファイル実装
-- データ保存場所: `~/.jikanicle/*.json`
+- `src/application/repositories/`: リポジトリのインターフェースを定義
+- `src/infrastructure/repositories/`: ファイルシステムベースのリポジトリ実装
 
-### UI層（Bubble Tea）
-- **Model-Update-View**パターン
-- キーバインド:
-  - `j/k`, `↑/↓`: カーソル移動
-  - `Enter/Space`: タスク選択・状態変更
-  - `p`: In Progress, `c`: Completed, `n`: Not Started
-  - `r`: リロード, `q/Ctrl+C`: 終了
+### UI層（Ink & Zustand）
+- **React/Ink**: コンポーネントベースのTUI構築
+- **Zustand**: 状態管理
+- **カスタムフック**: UIロジックのカプセル化
 
 ## 開発ガイドライン
 
 ### コード規約
-- 日本語コメント可（ドメイン知識の説明等）
-- 関数・変数名は英語
-- エラーハンドリングを適切に実装
-- テストファーストでの開発を推奨
+- ESLintのルールに従う
+- 関数型プログラミングの原則を尊重（不変性、純粋関数）
+- 型安全性を重視し、`any`型を避ける
+- JSDocコメントによるドキュメント化
 
 ### テスト戦略
-- ドメインロジックの単体テスト
+- Vitestを使用したテスト駆動開発（TDD）
+- ドメイン層の単体テスト
 - リポジトリの統合テスト
-- UI層の振る舞いテスト（teatest利用）
+- UIコンポーネントのテスト
 
 ### 技術スタック
-- **言語**: Go 1.24.1+
-- **TUIフレームワーク**: Bubble Tea
-- **スタイリング**: Lipgloss
-- **テスト**: 標準library + teatest
+- **言語**: TypeScript
+- **UIフレームワーク**: Ink (React)
+- **状態管理**: Zustand
+- **バリデーション**: Zod
+- **エラーハンドリング**: neverthrow
+- **テスト**: Vitest
+- **パッケージ管理**: npm/pnpm
 - **データ永続化**: JSONファイル

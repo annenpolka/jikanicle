@@ -2,94 +2,104 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## プロジェクト概要
+## Project Overview
 
-Jikanicleは、AIによる所要時間の予測とカテゴリ分類を活用したタイムブロッキングTUIアプリケーションです。ユーザーがタスクを入力すると、AIが最適なタイムブロックを自動生成し、実作業の時間計測により効率的なタイムマネジメントを実現します。DDD（ドメイン駆動設計）とスキーマ駆動開発を採用しています。
+Jikanicle is a time-blocking TUI application that leverages AI-powered duration prediction and category classification. When users input tasks, AI automatically generates optimal time blocks and enables efficient time management through real work time tracking. The project adopts DDD (Domain Driven Design) and schema-driven development.
 
-## 開発ガイドライン
+## Development Guidelines
 
-### 命名規約
-- ドメインモデル：WorkItem, ScheduleSlot, TaskDurationPredictor, SchedulePlannerなど、ドメイン概念を反映
-- 関数・変数・リポジトリ：getTaskById, storeTask, updateTask, createTaskManagerなど一貫したルール
+### Language Policy
+**IMPORTANT: All user-facing text, comments, error messages, and documentation must be written in English only. This includes:**
+- UI text and labels
+- Error messages and validation text
+- Code comments and JSDoc
+- Test descriptions and assertions
+- Git commit messages
+- Documentation
 
-### コード規約
-- t-wadaによるTDDに基づいて進める
-- oxlintのルールに従う
-- 関数型プログラミングの原則を尊重（不変性、純粋関数）
-- 型安全性を重視し、`any`型を避ける
-- JSDocコメントによるドキュメント化
+### Naming Conventions
+- Domain Models: WorkItem, ScheduleSlot, TaskDurationPredictor, SchedulePlanner, etc., reflecting domain concepts
+- Functions/Variables/Repositories: getTaskById, storeTask, updateTask, createTaskManager, etc., following consistent rules
 
-### テスト戦略
-- Vitestを使用したt-wadaのテスト駆動開発（TDD）
-- ドメイン層の単体テスト
-- リポジトリの統合テスト
-- UIコンポーネントのテスト
+### Code Standards
+- Follow t-wada's TDD approach
+- Adhere to oxlint rules
+- Respect functional programming principles (immutability, pure functions)
+- Prioritize type safety and avoid `any` type
+- Document with JSDoc comments
 
-### 技術スタック
-- **言語**: TypeScript
-- **UIフレームワーク**: Ink (React)
-- **型定義・バリデーション**: Zod
-- **エラーハンドリング**: neverthrow
-- **テスト**: Vitest
-- **パッケージ管理**: pnpm
-- **データストレージ**: JSONファイル（将来的にSQLite等を検討）
-- **AI統合**: 外部AI API（例：OpenAI API）
+### Testing Strategy
+- Test-driven development (TDD) using Vitest following t-wada's approach
+- Unit tests for domain layer
+- Integration tests for repositories
+- UI component tests
 
-## 開発コマンド
+### Technology Stack
+- **Language**: TypeScript
+- **UI Framework**: Ink (React)
+- **Type Definition/Validation**: Zod
+- **Error Handling**: neverthrow
+- **Testing**: Vitest
+- **Package Management**: pnpm
+- **Data Storage**: JSON files (considering SQLite in the future)
+- **AI Integration**: External AI APIs (e.g., OpenAI API)
 
-### ビルドコマンド
+## Development Commands
+
+### Build Commands
 ```bash
-# TypeScriptのビルド
+# TypeScript build
 pnpm build
 ```
 
-### 実行コマンド
+### Run Commands
 ```bash
-# アプリケーションの起動
+# Start application
 pnpm start
 
-# 開発モードでの起動（ファイル変更時に自動リロード）
+# Development mode (auto-reload on file changes)
 pnpm dev
 ```
 
-### テストコマンド
+### Test Commands
 ```bash
-# 全てのテストを実行
+# Run all tests
 pnpm test
 
-# テストを一度だけ実行
+# Run tests once
 pnpm test:run
 
-# カバレッジレポートを出力
+# Generate coverage report
 pnpm test:coverage
 
-# 型チェックのみ実行
+# Type check only
 pnpm test:typecheck
 ```
 
-### リンター
+### Linter
 ```bash
-# oxlintでコードをチェック
+# Check code with oxlint
 pnpm lint
 
-# oxlintでコードを自動修正
+# Auto-fix with oxlint
 pnpm lint:fix
 ```
-## 主要機能
-1. **タスク管理機能**
-   - ユーザーがタスク名と任意の説明を入力
-   - AIが入力内容から所要時間とカテゴリを予測
-   - タスクはJSONファイルに保存され、一覧表示・詳細表示が可能
 
-2. **タイムブロッキング機能**
-   - 指定された時間枠に合わせて各タスクの予測所要時間を元にタイムブロックを自動生成
-   - 開始時刻・終了時刻が計算され、スケジュール内に配置
+## Key Features
+1. **Task Management**
+   - Users input task names and optional descriptions
+   - AI predicts duration and categorizes based on input content
+   - Tasks are saved to JSON files with list and detail view capabilities
 
-3. **タイムトラッキング機能**
-   - キー操作（開始：s、停止：p、終了：e）でタスクの実績時間を計測
-   - 記録された実績時間をAIの学習データとして活用
+2. **Time Blocking**
+   - Automatically generates time blocks based on predicted durations for specified time frames
+   - Calculates start/end times and places them within schedules
 
-4. **予測フィードバック機能**
-   - AIの予測結果に対して「短すぎる／長すぎる／適切／不確か」のフィードバックを提供
-   - フィードバック情報はタスクに紐付けられ、AIモデルの学習に利用
+3. **Time Tracking**
+   - Measures actual task time through key operations (start: s, pause: p, end: e)
+   - Uses recorded actual times as AI learning data
+
+4. **Prediction Feedback**
+   - Provides feedback on AI predictions: "too short/too long/accurate/uncertain"
+   - Feedback information is linked to tasks and used for AI model learning
 

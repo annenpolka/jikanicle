@@ -18,14 +18,14 @@ export interface TaskFormData {
 type FormStep = "name" | "description" | "duration" | "category" | "confirm";
 
 const categoryOptions = [
-  { label: "仕事", value: "work" as TaskCategory },
-  { label: "個人", value: "personal" as TaskCategory },
-  { label: "勉強", value: "study" as TaskCategory },
-  { label: "健康", value: "health" as TaskCategory },
-  { label: "買い物", value: "shopping" as TaskCategory },
-  { label: "会議", value: "meeting" as TaskCategory },
-  { label: "その他", value: "other" as TaskCategory },
-  { label: "スキップ", value: undefined }
+  { label: "Work", value: "work" as TaskCategory },
+  { label: "Personal", value: "personal" as TaskCategory },
+  { label: "Study", value: "study" as TaskCategory },
+  { label: "Health", value: "health" as TaskCategory },
+  { label: "Shopping", value: "shopping" as TaskCategory },
+  { label: "Meeting", value: "meeting" as TaskCategory },
+  { label: "Other", value: "other" as TaskCategory },
+  { label: "Skip", value: undefined }
 ];
 
 export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel }) => {
@@ -76,24 +76,24 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel }) => {
       case "name":
         return (
           <Box flexDirection="column">
-            <Text>タスク名を入力してください:</Text>
-            <Text dimColor>(入力後、Enterで次へ)</Text>
+            <Text>Enter task name:</Text>
+            <Text dimColor>(Press Enter to continue)</Text>
           </Box>
         );
 
       case "description":
         return (
           <Box flexDirection="column">
-            <Text>説明を入力してください（任意）:</Text>
-            <Text dimColor>(入力後、Enterで次へ。空の場合はスキップ)</Text>
+            <Text>Enter description (optional):</Text>
+            <Text dimColor>(Press Enter to continue, leave empty to skip)</Text>
           </Box>
         );
 
       case "duration":
         return (
           <Box flexDirection="column">
-            <Text>予想所要時間（分）を入力してください（任意）:</Text>
-            <Text dimColor>(数値を入力後、Enterで次へ。空の場合はスキップ)</Text>
+            <Text>Enter estimated duration in minutes (optional):</Text>
+            <Text dimColor>(Enter number and press Enter, leave empty to skip)</Text>
           </Box>
         );
 
@@ -101,7 +101,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel }) => {
         return (
           <Box flexDirection="column">
             <Box marginBottom={1}>
-              <Text>カテゴリを選択してください:</Text>
+              <Text>Select category:</Text>
             </Box>
             <SelectInput
               items={categoryOptions}
@@ -114,31 +114,31 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel }) => {
         return (
           <Box flexDirection="column">
             <Box marginBottom={1}>
-              <Text bold>タスク情報の確認:</Text>
+              <Text bold>Confirm task details:</Text>
             </Box>
             <Box marginBottom={1}>
-              <Text>名前: {formData.name}</Text>
+              <Text>Name: {formData.name}</Text>
             </Box>
             {formData.description && (
               <Box marginBottom={1}>
-                <Text>説明: {formData.description}</Text>
+                <Text>Description: {formData.description}</Text>
               </Box>
             )}
             {formData.estimatedDurationMinutes && (
               <Box marginBottom={1}>
-                <Text>予想時間: {formData.estimatedDurationMinutes}分</Text>
+                <Text>Estimated time: {formData.estimatedDurationMinutes} minutes</Text>
               </Box>
             )}
             {formData.category && (
               <Box marginBottom={1}>
-                <Text>カテゴリ: {categoryOptions.find(opt => opt.value === formData.category)?.label}</Text>
+                <Text>Category: {categoryOptions.find(opt => opt.value === formData.category)?.label}</Text>
               </Box>
             )}
             <Box marginTop={1}>
               <SelectInput
                 items={[
-                  { label: "作成する", value: "submit" },
-                  { label: "キャンセル", value: "cancel" }
+                  { label: "Create", value: "submit" },
+                  { label: "Cancel", value: "cancel" }
                 ]}
                 onSelect={handleConfirm}
               />
@@ -155,7 +155,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel }) => {
     <Box padding={1} borderStyle="single" borderColor="blue">
       <Box flexDirection="column">
         <Box marginBottom={1}>
-          <Text bold underline>新しいタスクの作成</Text>
+          <Text bold underline>Create New Task</Text>
         </Box>
         {renderCurrentStep()}
       </Box>

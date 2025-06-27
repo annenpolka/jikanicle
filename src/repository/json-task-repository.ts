@@ -49,7 +49,7 @@ export class JsonTaskRepository implements TaskRepository {
 
       const validationResult = TaskSchema.safeParse(newTask);
       if (!validationResult.success) {
-        return err(new Error(`バリデーションエラー: ${validationResult.error.message}`));
+        return err(new Error(`Validation error: ${validationResult.error.message}`));
       }
 
       const tasks = await this.loadTasks();
@@ -68,7 +68,7 @@ export class JsonTaskRepository implements TaskRepository {
       const taskIndex = tasks.findIndex(t => t.id === params.id);
       
       if (taskIndex === -1) {
-        return err(new Error(`タスクが見つかりません: ${params.id}`));
+        return err(new Error(`Task not found: ${params.id}`));
       }
 
       const existingTask = tasks[taskIndex];
@@ -80,7 +80,7 @@ export class JsonTaskRepository implements TaskRepository {
 
       const validationResult = TaskSchema.safeParse(updatedTask);
       if (!validationResult.success) {
-        return err(new Error(`バリデーションエラー: ${validationResult.error.message}`));
+        return err(new Error(`Validation error: ${validationResult.error.message}`));
       }
 
       tasks[taskIndex] = updatedTask;
@@ -98,7 +98,7 @@ export class JsonTaskRepository implements TaskRepository {
       const filteredTasks = tasks.filter(t => t.id !== id);
       
       if (tasks.length === filteredTasks.length) {
-        return err(new Error(`タスクが見つかりません: ${id}`));
+        return err(new Error(`Task not found: ${id}`));
       }
 
       await this.saveTasks(filteredTasks);
@@ -115,7 +115,7 @@ export class JsonTaskRepository implements TaskRepository {
       const parsed = JSON.parse(data);
       
       if (!Array.isArray(parsed)) {
-        throw new Error("タスクデータが配列ではありません");
+        throw new Error("Task data is not an array");
       }
 
       return parsed.map(item => ({

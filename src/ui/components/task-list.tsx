@@ -25,13 +25,13 @@ const getStatusColor = (status: TaskStatus): string => {
 const getStatusLabel = (status: TaskStatus): string => {
   switch (status) {
     case "pending":
-      return "待機中";
+      return "Pending";
     case "in-progress":
-      return "実行中";
+      return "In Progress";
     case "completed":
-      return "完了";
+      return "Completed";
     case "cancelled":
-      return "キャンセル";
+      return "Cancelled";
     default:
       return status;
   }
@@ -39,22 +39,22 @@ const getStatusLabel = (status: TaskStatus): string => {
 
 const formatDuration = (minutes?: number): string => {
   if (!minutes) return "-";
-  if (minutes < 60) return `${minutes}分`;
+  if (minutes < 60) return `${minutes}min`;
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
-  return remainingMinutes > 0 ? `${hours}時間${remainingMinutes}分` : `${hours}時間`;
+  return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
 };
 
 export const TaskList: React.FC<TaskListProps> = ({ tasks, selectedTaskId }) => {
   return (
     <Box flexDirection="column" padding={1}>
       <Box marginBottom={1}>
-        <Text bold underline>タスク一覧</Text>
+        <Text bold underline>Task List</Text>
       </Box>
       
       {tasks.length === 0 ? (
         <Box padding={1}>
-          <Text dimColor>タスクがありません</Text>
+          <Text dimColor>No tasks available</Text>
         </Box>
       ) : (
         tasks.map((task) => (
@@ -82,14 +82,14 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, selectedTaskId }) => 
                 <Box marginTop={1} justifyContent="space-between">
                   <Box>
                     {task.category && (
-                      <Text color="cyan">カテゴリ: {task.category}</Text>
+                      <Text color="cyan">Category: {task.category}</Text>
                     )}
                   </Box>
                   <Box>
                     <Text dimColor>
-                      予想: {formatDuration(task.estimatedDurationMinutes)}
+                      Estimated: {formatDuration(task.estimatedDurationMinutes)}
                       {task.actualDurationMinutes && 
-                        ` | 実績: ${formatDuration(task.actualDurationMinutes)}`
+                        ` | Actual: ${formatDuration(task.actualDurationMinutes)}`
                       }
                     </Text>
                   </Box>
@@ -97,12 +97,12 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, selectedTaskId }) => 
                 
                 <Box marginTop={1}>
                   <Text dimColor>
-                    作成: {task.createdAt.toLocaleString("ja-JP")}
+                    Created: {task.createdAt.toLocaleString("en-US")}
                     {task.startedAt && 
-                      ` | 開始: ${task.startedAt.toLocaleString("ja-JP")}`
+                      ` | Started: ${task.startedAt.toLocaleString("en-US")}`
                     }
                     {task.completedAt && 
-                      ` | 完了: ${task.completedAt.toLocaleString("ja-JP")}`
+                      ` | Completed: ${task.completedAt.toLocaleString("en-US")}`
                     }
                   </Text>
                 </Box>

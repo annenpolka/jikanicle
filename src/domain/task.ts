@@ -19,9 +19,9 @@ export const TaskStatusSchema = z.enum([
 
 export const TaskSchema = z.object({
   id: z.string(),
-  name: z.string().min(1, "タスク名は必須です"),
+  name: z.string().min(1, "Task name is required"),
   description: z.string().optional(),
-  estimatedDurationMinutes: z.number().positive("所要時間は正の数である必要があります").optional(),
+  estimatedDurationMinutes: z.number().positive("Duration must be a positive number").optional(),
   actualDurationMinutes: z.number().positive().optional(),
   category: TaskCategorySchema.optional(),
   status: TaskStatusSchema.default("pending"),

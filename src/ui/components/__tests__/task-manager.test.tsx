@@ -23,35 +23,35 @@ describe("TaskManager", () => {
     vi.useRealTimers();
   });
 
-  describe("初期表示", () => {
-    it("初期表示時にタスク一覧が表示される", async () => {
+  describe("Initial Display", () => {
+    it("displays task list on initial render", async () => {
       const { lastFrame } = render(<TaskManager taskRepository={mockTaskRepository} />);
       
       await vi.runAllTimersAsync();
       
-      expect(lastFrame()).toContain("タスク一覧");
+      expect(lastFrame()).toContain("Task List");
     });
 
-    it("初期表示時にキーショートカットのヘルプが表示される", async () => {
+    it("displays keyboard shortcut help on initial render", async () => {
       const { lastFrame } = render(<TaskManager taskRepository={mockTaskRepository} />);
       
       await vi.runAllTimersAsync();
       
-      expect(lastFrame()).toContain("n: 新しいタスク");
-      expect(lastFrame()).toContain("q: 終了");
+      expect(lastFrame()).toContain("n: New task");
+      expect(lastFrame()).toContain("q: Quit");
     });
 
-    it("空のタスクリストの場合、適切なメッセージが表示される", async () => {
+    it("displays appropriate message when task list is empty", async () => {
       const { lastFrame } = render(<TaskManager taskRepository={mockTaskRepository} />);
       
       await vi.runAllTimersAsync();
       
-      expect(lastFrame()).toContain("タスクがありません");
+      expect(lastFrame()).toContain("No tasks available");
     });
   });
 
-  describe("キーショートカット", () => {
-    it("'n'キーでタスク作成フォームが表示される", async () => {
+  describe("Keyboard Shortcuts", () => {
+    it("displays task creation form when 'n' key is pressed", async () => {
       const { lastFrame, stdin } = render(<TaskManager taskRepository={mockTaskRepository} />);
       
       await vi.runAllTimersAsync();
@@ -60,11 +60,11 @@ describe("TaskManager", () => {
       
       await vi.runAllTimersAsync();
       
-      expect(lastFrame()).toContain("新しいタスクの作成");
-      expect(lastFrame()).toContain("タスク名を入力してください");
+      expect(lastFrame()).toContain("Create New Task");
+      expect(lastFrame()).toContain("Enter task name");
     });
 
-    it("'q'キーでアプリケーションが終了される", async () => {
+    it("exits application when 'q' key is pressed", async () => {
       const mockExit = vi.spyOn(globalThis.process!, "exit").mockImplementation(() => {
         throw new Error("process.exit called");
       });
@@ -82,30 +82,30 @@ describe("TaskManager", () => {
       mockExit.mockRestore();
     });
 
-    it("ESCキーでフォームからタスク一覧に戻る", async () => {
+    it("returns to task list from form when ESC key is pressed", async () => {
       const { lastFrame, stdin } = render(<TaskManager taskRepository={mockTaskRepository} />);
       
       await vi.runAllTimersAsync();
       
-      // フォームを開く
+      // Open form
       stdin.write("n");
       await vi.runAllTimersAsync();
-      expect(lastFrame()).toContain("新しいタスクの作成");
+      expect(lastFrame()).toContain("Create New Task");
       
-      // ESCで戻る
+      // Return with ESC
       stdin.write("\u001b"); // ESC key
       await vi.runAllTimersAsync();
-      expect(lastFrame()).toContain("タスク一覧");
+      expect(lastFrame()).toContain("Task List");
     });
   });
 
-  describe("タスクがある場合", () => {
+  describe("When tasks exist", () => {
     beforeEach(() => {
       const mockTasks = [
         {
           id: "1",
-          name: "テストタスク1",
-          description: "テスト用のタスクです",
+          name: "Test Task 1",
+          description: "This is a test task",
           status: "pending" as const,
           category: "work" as const,
           estimatedDurationMinutes: 30,
@@ -117,14 +117,14 @@ describe("TaskManager", () => {
       mockTaskRepository.getAll = vi.fn().mockResolvedValue(ok(mockTasks));
     });
 
-    it("タスクリストにタスクが表示される", async () => {
+    it("displays tasks in the task list", async () => {
       const { lastFrame } = render(<TaskManager taskRepository={mockTaskRepository} />);
       
       await vi.runAllTimersAsync();
       
-      expect(lastFrame()).toContain("テストタスク1");
-      expect(lastFrame()).toContain("テスト用のタスクです");
-      expect(lastFrame()).toContain("待機中");
+      expect(lastFrame()).toContain("Test Task 1");
+      expect(lastFrame()).toContain("This is a test task");
+      expect(lastFrame()).toContain("Pending");
     });
   });
 });

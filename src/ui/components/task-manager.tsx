@@ -25,7 +25,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
     if (result.isOk()) {
       setTasks(result.value);
     } else {
-      setError(`タスクの読み込みに失敗しました: ${result.error.message}`);
+      setError(`Failed to load tasks: ${result.error.message}`);
     }
     
     setIsLoading(false);
@@ -54,7 +54,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
       await loadTasks();
       setViewMode("list");
     } else {
-      setError(`タスクの作成に失敗しました: ${result.error.message}`);
+      setError(`Failed to create task: ${result.error.message}`);
     }
     
     setIsLoading(false);
@@ -67,7 +67,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
   if (isLoading) {
     return (
       <Box padding={1}>
-        <Text>読み込み中...</Text>
+        <Text>Loading...</Text>
       </Box>
     );
   }
@@ -75,8 +75,8 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
   if (error) {
     return (
       <Box padding={1}>
-        <Text color="red">エラー: {error}</Text>
-        <Text dimColor>n: 新しいタスク | q: 終了</Text>
+        <Text color="red">Error: {error}</Text>
+        <Text dimColor>n: New task | q: Quit</Text>
       </Box>
     );
   }
@@ -84,7 +84,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
   return (
     <Box flexDirection="column">
       <Box padding={1}>
-        <Text dimColor>n: 新しいタスク | q: 終了</Text>
+        <Text dimColor>n: New task | q: Quit</Text>
       </Box>
       
       {viewMode === "list" && <TaskList tasks={tasks} />}

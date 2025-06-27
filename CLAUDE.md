@@ -11,40 +11,40 @@ Jikanicleは、AIによる所要時間の予測とカテゴリ分類を活用し
 ### ビルドコマンド
 ```bash
 # TypeScriptのビルド
-npm run build
+pnpm build
 ```
 
 ### 実行コマンド
 ```bash
 # アプリケーションの起動
-npm start
+pnpm start
 
 # 開発モードでの起動（ファイル変更時に自動リロード）
-npm run dev
+pnpm dev
 ```
 
 ### テストコマンド
 ```bash
 # 全てのテストを実行
-npm test
+pnpm test
 
 # テストを一度だけ実行
-npm run test:run
+pnpm test:run
 
 # カバレッジレポートを出力
-npm run test:coverage
+pnpm test:coverage
 
 # 型チェックのみ実行
-npm run test:typecheck
+pnpm test:typecheck
 ```
 
 ### リンター
 ```bash
-# ESLintでコードをチェック
-npm run lint
+# oxlintでコードをチェック
+pnpm lint
 
-# ESLintでコードを自動修正
-npm run lint:fix
+# oxlintでコードを自動修正
+pnpm lint:fix
 ```
 
 ## アーキテクチャ構成

@@ -34,7 +34,7 @@
 3. **インフラストラクチャ層**
    - JSON ファイルを用いたデータストレージ（将来的には SQLite などへの拡張を検討）
    - 外部 AI API（例：OpenAI API）との連携による所要時間の予測とカテゴリ分類
-   - blessed または neo-blessed を用いた TUI 実装
+   - ink を用いた TUI 実装
 
 ---
 

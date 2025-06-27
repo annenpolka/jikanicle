@@ -13,52 +13,5 @@
     },
     "intention": "新しいログディレクトリ構造でエラーログが適切に保存されるかの検証",
     "context": "ログディレクトリ構造を変更後、各ログレベルが適切なディレクトリに保存されるか確認するテスト"
-  },
-  {
-    "id": "0d830fef-5ceb-4384-8472-c9c9ef34deec",
-    "timestamp": "2025-03-11T08:38:53.041Z",
-    "type": "error_encountered",
-    "level": "warn",
-    "summary": "internal/uiパッケージが未実装によるコンパイルエラー",
-    "details": {
-      "error": "could not import github.com/annenpolka/jikanicle/internal/ui (no required module provides package)",
-      "file": "cmd/jikanicle/main.go",
-      "line": 8,
-      "context": "メインエントリーポイント実装中のインポートエラー"
-    },
-    "intention": "エラーを把握し、適切に対応するために記録",
-    "context": "Goプロジェクトの初期化作業中、必要なパッケージが未実装"
-  },
-  {
-    "id": "89982dea-9ad3-4754-913a-dc3f2a7d2e34",
-    "timestamp": "2025-03-11T09:14:30.586Z",
-    "type": "error_encountered",
-    "level": "error",
-    "summary": "teatestライブラリの使用方法に関するコンパイルエラー",
-    "details": {
-      "errors": [
-        "tm.Model undefinedエラー - TestModelの正しいアクセサが未使用",
-        "tm.View undefinedエラー - ビュー取得メソッドが未使用",
-        "golden.Assert未定義エラー - 正しいimportまたは使用方法が必要"
-      ],
-      "file": "internal/ui/model_test.go"
-    },
-    "intention": "teatestライブラリの最新APIに対応したコード修正",
-    "context": "BubbleTeaテストコードのteatestライブラリへの移行中にAPIの互換性問題が発生"
-  },
-  {
-    "id": "d4701fce-6bfc-448e-8348-5f1d031442a5",
-    "timestamp": "2025-03-11T09:17:43.603Z",
-    "type": "error_encountered",
-    "level": "error",
-    "summary": "TestModelのAPIエラー修正",
-    "details": {
-      "errors": [
-        "tm.Program undefined - TestModelのAPIが変更されている"
-      ],
-      "file": "internal/ui/model_test.go"
-    },
-    "intention": "teatestライブラリの最新APIに合わせたコード修正",
-    "context": "Bubble Teaテストコードの移行作業"
   }
 ]

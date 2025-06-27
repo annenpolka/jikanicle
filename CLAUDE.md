@@ -101,7 +101,7 @@ npm run lint:fix
 
 ### コード規約
 - t-wadaによるTDDに基づいて進める
-- ESLintのルールに従う
+- oxlintのルールに従う
 - 関数型プログラミングの原則を尊重（不変性、純粋関数）
 - 型安全性を重視し、`any`型を避ける
 - JSDocコメントによるドキュメント化
@@ -118,6 +118,6 @@ npm run lint:fix
 - **型定義・バリデーション**: Zod
 - **エラーハンドリング**: neverthrow
 - **テスト**: Vitest
-- **パッケージ管理**: npm/pnpm
+- **パッケージ管理**: pnpm
 - **データストレージ**: JSONファイル（将来的にSQLite等を検討）
 - **AI統合**: 外部AI API（例：OpenAI API）

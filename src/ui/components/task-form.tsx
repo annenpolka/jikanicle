@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, Text } from "ink";
+import TextInput from "ink-text-input";
 import SelectInput from "ink-select-input";
 import type { TaskCategory } from "../../domain/task.js";
 
@@ -36,25 +37,29 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel }) => {
     estimatedDurationMinutes: undefined,
     category: undefined
   });
+  const [inputValue, setInputValue] = useState("");
 
-  const _handleNameInput = (name: string) => {
+  const handleNameSubmit = (name: string) => {
     if (name.trim()) {
       setFormData(prev => ({ ...prev, name: name.trim() }));
+      setInputValue("");
       setCurrentStep("description");
     }
   };
 
-  const _handleDescriptionInput = (description: string) => {
+  const handleDescriptionSubmit = (description: string) => {
     setFormData(prev => ({ ...prev, description: description.trim() || undefined }));
+    setInputValue("");
     setCurrentStep("duration");
   };
 
-  const _handleDurationInput = (duration: string) => {
+  const handleDurationSubmit = (duration: string) => {
     const durationNum = parseInt(duration.trim());
     setFormData(prev => ({ 
       ...prev, 
       estimatedDurationMinutes: isNaN(durationNum) ? undefined : durationNum 
     }));
+    setInputValue("");
     setCurrentStep("category");
   };
 
@@ -77,7 +82,11 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel }) => {
         return (
           <Box flexDirection="column">
             <Text>Enter task name:</Text>
-            <Text dimColor>(Press Enter to continue)</Text>
+            <TextInput
+              value={inputValue}
+              onChange={setInputValue}
+              onSubmit={handleNameSubmit}
+            />
           </Box>
         );
 
@@ -85,7 +94,11 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel }) => {
         return (
           <Box flexDirection="column">
             <Text>Enter description (optional):</Text>
-            <Text dimColor>(Press Enter to continue, leave empty to skip)</Text>
+            <TextInput
+              value={inputValue}
+              onChange={setInputValue}
+              onSubmit={handleDescriptionSubmit}
+            />
           </Box>
         );
 
@@ -93,7 +106,11 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel }) => {
         return (
           <Box flexDirection="column">
             <Text>Enter estimated duration in minutes (optional):</Text>
-            <Text dimColor>(Enter number and press Enter, leave empty to skip)</Text>
+            <TextInput
+              value={inputValue}
+              onChange={setInputValue}
+              onSubmit={handleDurationSubmit}
+            />
           </Box>
         );
 

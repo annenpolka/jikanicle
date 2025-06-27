@@ -100,7 +100,7 @@
 
 - **バックエンド**: Node.js, TypeScript
 - **型定義／バリデーション**: zod
-- **UI**: blessed/neo-blessed (TUI 実装)
+- **UI**: ink
 - **データストレージ**: 初期は JSON ファイル、将来的には SQLite 等
 - **AI 統合**: 外部 AI API (例: OpenAI API)
 

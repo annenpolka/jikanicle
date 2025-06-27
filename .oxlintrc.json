@@ -24,7 +24,6 @@
     "complexity": ["warn", { "max": 7 }],
     "require-await": "error",
     "no-empty-function": "warn",
-    "no-explicit-any": "warn",
     "no-empty": "warn",
     "no-debugger": "error",
     "no-undef": "error",

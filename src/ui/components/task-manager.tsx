@@ -16,6 +16,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   const loadTasks = async () => {
     setIsLoading(true);
@@ -24,6 +25,16 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
     const result = await taskRepository.getAll();
     if (result.isOk()) {
       setTasks(result.value);
+      // Keep selection stable if possible, otherwise select first when list is non-empty
+      if (result.value.length === 0) {
+        setSelectedIndex(0);
+      } else {
+        setSelectedIndex((prev) => {
+          // Clamp to valid range
+          const clamped = Math.min(Math.max(prev, 0), result.value.length - 1);
+          return clamped;
+        });
+      }
     } else {
       setError(`Failed to load tasks: ${result.error.message}`);
     }
@@ -42,6 +53,12 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
       globalThis.process?.exit(0);
     } else if (key.escape) {
       setViewMode("list");
+    } else if (viewMode === "list" && tasks.length > 0) {
+      if (key.downArrow) {
+        setSelectedIndex((idx) => Math.min(idx + 1, tasks.length - 1));
+      } else if (key.upArrow) {
+        setSelectedIndex((idx) => Math.max(idx - 1, 0));
+      }
     }
   });
 
@@ -87,7 +104,12 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
         <Text dimColor>n: New task | q: Quit</Text>
       </Box>
       
-      {viewMode === "list" && <TaskList tasks={tasks} />}
+      {viewMode === "list" && (
+        <TaskList 
+          tasks={tasks} 
+          selectedTaskId={tasks[selectedIndex]?.id}
+        />
+      )}
       {viewMode === "form" && (
         <TaskForm 
           onSubmit={handleTaskSubmit} 

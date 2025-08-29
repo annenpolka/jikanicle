@@ -126,5 +126,83 @@ describe("TaskManager", () => {
       expect(lastFrame()).toContain("This is a test task");
       expect(lastFrame()).toContain("Pending");
     });
+
+    it("selects first task by default", async () => {
+      const mockTasks = [
+        {
+          id: "1",
+          name: "Test Task 1",
+          description: "First task",
+          status: "pending" as const,
+          category: "work" as const,
+          estimatedDurationMinutes: 30,
+          createdAt: new Date("2023-01-01T10:00:00Z"),
+          updatedAt: new Date("2023-01-01T10:00:00Z")
+        },
+        {
+          id: "2",
+          name: "Test Task 2",
+          description: "Second task",
+          status: "pending" as const,
+          category: "work" as const,
+          estimatedDurationMinutes: 45,
+          createdAt: new Date("2023-01-01T11:00:00Z"),
+          updatedAt: new Date("2023-01-01T11:00:00Z")
+        }
+      ];
+
+      mockTaskRepository.getAll = vi.fn().mockResolvedValue(ok(mockTasks));
+
+      const { lastFrame } = render(<TaskManager taskRepository={mockTaskRepository} />);
+      await vi.runAllTimersAsync();
+
+      // Selected indicator should appear next to first task name
+      expect(lastFrame()).toMatch(/>.*Test Task 1/);
+      expect(lastFrame()).not.toMatch(/>.*Test Task 2/);
+    });
+
+    it("moves selection with arrow keys", async () => {
+      const mockTasks = [
+        {
+          id: "1",
+          name: "Test Task 1",
+          description: "First task",
+          status: "pending" as const,
+          category: "work" as const,
+          estimatedDurationMinutes: 30,
+          createdAt: new Date("2023-01-01T10:00:00Z"),
+          updatedAt: new Date("2023-01-01T10:00:00Z")
+        },
+        {
+          id: "2",
+          name: "Test Task 2",
+          description: "Second task",
+          status: "pending" as const,
+          category: "work" as const,
+          estimatedDurationMinutes: 45,
+          createdAt: new Date("2023-01-01T11:00:00Z"),
+          updatedAt: new Date("2023-01-01T11:00:00Z")
+        }
+      ];
+
+      mockTaskRepository.getAll = vi.fn().mockResolvedValue(ok(mockTasks));
+
+      const { lastFrame, stdin } = render(<TaskManager taskRepository={mockTaskRepository} />);
+      await vi.runAllTimersAsync();
+
+      // Initially first is selected
+      expect(lastFrame()).toMatch(/>.*Test Task 1/);
+
+      // Press Down Arrow
+      stdin.write("\u001B[B");
+      await vi.runAllTimersAsync();
+      expect(lastFrame()).toMatch(/>.*Test Task 2/);
+      expect(lastFrame()).not.toMatch(/>.*Test Task 1/);
+
+      // Press Up Arrow
+      stdin.write("\u001B[A");
+      await vi.runAllTimersAsync();
+      expect(lastFrame()).toMatch(/>.*Test Task 1/);
+    });
   });
 });

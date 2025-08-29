@@ -67,7 +67,10 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, selectedTaskId }) => 
             >
               <Box flexDirection="column">
                 <Box justifyContent="space-between">
-                  <Text bold>{task.name}</Text>
+                  <Text bold>
+                    {selectedTaskId === task.id ? "> " : "  "}
+                    {task.name}
+                  </Text>
                   <Text color={getStatusColor(task.status)}>
                     {getStatusLabel(task.status)}
                   </Text>

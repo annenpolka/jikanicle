@@ -68,6 +68,12 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
       setIsCompact(prev => !prev);
     } else if (input === "q") {
       globalThis.process?.exit(0);
+    } else if (input === "s" && viewMode === "list") {
+      // Start timing for selected task
+      void handleStartTiming();
+    } else if (input === "x" && viewMode === "list") {
+      // Stop timing for selected task
+      void handleStopTiming();
     } else if (key.escape) {
       setViewMode("list");
     } else if (viewMode === "list" && tasks.length > 0) {
@@ -98,6 +104,49 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
     setViewMode("list");
   };
 
+  const handleStartTiming = async () => {
+    if (tasks.length === 0) return;
+    const current = tasks[selectedIndex];
+    if (!current) return;
+    setIsLoading(true);
+    setError(null);
+    const now = new Date();
+    const result = await taskRepository.update({
+      id: current.id,
+      status: "in-progress",
+      startedAt: now
+    });
+    if (result.isOk()) {
+      await loadTasks();
+    } else {
+      setError(`Failed to start timing: ${result.error.message}`);
+    }
+    setIsLoading(false);
+  };
+
+  const handleStopTiming = async () => {
+    if (tasks.length === 0) return;
+    const current = tasks[selectedIndex];
+    if (!current || !current.startedAt) return;
+    setIsLoading(true);
+    setError(null);
+    const now = new Date();
+    const diffMs = now.getTime() - current.startedAt.getTime();
+    const minutes = Math.max(1, Math.round(diffMs / 60000));
+    const result = await taskRepository.update({
+      id: current.id,
+      status: "completed",
+      completedAt: now,
+      actualDurationMinutes: minutes
+    });
+    if (result.isOk()) {
+      await loadTasks();
+    } else {
+      setError(`Failed to stop timing: ${result.error.message}`);
+    }
+    setIsLoading(false);
+  };
+
   if (isLoading) {
     return (
       <Box padding={1}>
@@ -118,7 +167,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
   return (
     <Box flexDirection="column">
       <Box padding={1}>
-        <Text dimColor>n: New task | c: Compact | q: Quit</Text>
+        <Text dimColor>n: New task | c: Compact | s: Start | x: Stop | q: Quit</Text>
       </Box>
       {!inputActive && (
         <Box paddingX={1}>

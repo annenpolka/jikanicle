@@ -123,8 +123,9 @@ describe("TaskManager", () => {
       await vi.runAllTimersAsync();
       
       expect(lastFrame()).toContain("Test Task 1");
-      expect(lastFrame()).toContain("This is a test task");
       expect(lastFrame()).toContain("Pending");
+      // In compact mode, description is not shown
+      expect(lastFrame()).not.toContain("This is a test task");
     });
 
     it("selects first task by default", async () => {
@@ -234,38 +235,35 @@ describe("TaskManager", () => {
       const { lastFrame, stdin } = render(<TaskManager taskRepository={mockTaskRepository} />);
       await vi.runAllTimersAsync();
 
-      // Detailed by default
+      // Compact by default
+      expect(lastFrame()).toContain("Task List (compact)");
+      expect(lastFrame()).toContain("Category:");
+      expect(lastFrame()).not.toContain("Created:");
+
+      // Toggle to detailed
+      stdin.write("c");
+      await vi.runAllTimersAsync();
       expect(lastFrame()).toContain("Task List");
       expect(lastFrame()).not.toContain("Task List (compact)");
       expect(lastFrame()).toContain("Category:");
       expect(lastFrame()).toContain("Created:");
 
-      // Toggle to compact
-      stdin.write("c");
-      await vi.runAllTimersAsync();
-      expect(lastFrame()).toContain("Task List (compact)");
-      // compact view now shows category but still hides created timestamp
-      expect(lastFrame()).toContain("Category:");
-      expect(lastFrame()).not.toContain("Created:");
-
       // Still shows selection indicator and task name
       expect(lastFrame()).toMatch(/> .*Test Task 1/);
 
-      // Toggle back to detailed
+      // Toggle back to compact
       stdin.write("c");
       await vi.runAllTimersAsync();
-      expect(lastFrame()).not.toContain("Task List (compact)");
+      expect(lastFrame()).toContain("Task List (compact)");
       expect(lastFrame()).toContain("Category:");
+      expect(lastFrame()).not.toContain("Created:");
     });
 
     it("shows estimated time in compact view when available", async () => {
-      const { lastFrame, stdin } = render(<TaskManager taskRepository={mockTaskRepository} />);
+      const { lastFrame } = render(<TaskManager taskRepository={mockTaskRepository} />);
       await vi.runAllTimersAsync();
 
-      // Toggle to compact
-      stdin.write("c");
-      await vi.runAllTimersAsync();
-
+      // Already in compact mode by default
       expect(lastFrame()).toContain("Estimated: 30min");
     });
 
@@ -288,13 +286,10 @@ describe("TaskManager", () => {
         }
       ]));
 
-      const { lastFrame, stdin } = render(<TaskManager taskRepository={mockTaskRepository} />);
+      const { lastFrame } = render(<TaskManager taskRepository={mockTaskRepository} />);
       await vi.runAllTimersAsync();
 
-      // Toggle to compact
-      stdin.write("c");
-      await vi.runAllTimersAsync();
-
+      // Already in compact mode by default
       expect(lastFrame()).toContain("Elapsed: 5min");
     });
 
@@ -317,13 +312,10 @@ describe("TaskManager", () => {
         }
       ]));
 
-      const { lastFrame, stdin } = render(<TaskManager taskRepository={mockTaskRepository} />);
+      const { lastFrame } = render(<TaskManager taskRepository={mockTaskRepository} />);
       await vi.runAllTimersAsync();
 
-      // Toggle to compact
-      stdin.write("c");
-      await vi.runAllTimersAsync();
-
+      // Already in compact mode by default
       expect(lastFrame()).toContain("Elapsed: 5min");
     });
   });

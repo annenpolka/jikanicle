@@ -16,6 +16,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
   const inputActive = isRawModeSupported || globalThis.process?.env?.NODE_ENV === "test";
   const [tasks, setTasks] = useState<Task[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [isCompact, setIsCompact] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
@@ -51,6 +52,8 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
   useInput((input, key) => {
     if (input === "n") {
       setViewMode("form");
+    } else if (input === "c") {
+      setIsCompact(prev => !prev);
     } else if (input === "q") {
       globalThis.process?.exit(0);
     } else if (key.escape) {
@@ -103,7 +106,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
   return (
     <Box flexDirection="column">
       <Box padding={1}>
-        <Text dimColor>n: New task | q: Quit</Text>
+        <Text dimColor>n: New task | c: Compact | q: Quit</Text>
       </Box>
       {!inputActive && (
         <Box paddingX={1}>
@@ -117,6 +120,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
         <TaskList 
           tasks={tasks} 
           selectedTaskId={tasks[selectedIndex]?.id}
+          compact={isCompact}
         />
       )}
       {viewMode === "form" && (

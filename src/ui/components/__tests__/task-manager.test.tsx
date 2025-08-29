@@ -205,4 +205,57 @@ describe("TaskManager", () => {
       expect(lastFrame()).toMatch(/>.*Test Task 1/);
     });
   });
+
+  describe("Compact Mode", () => {
+    beforeEach(() => {
+      const mockTasks = [
+        {
+          id: "1",
+          name: "Test Task 1",
+          description: "This is a test task",
+          status: "pending" as const,
+          category: "work" as const,
+          estimatedDurationMinutes: 30,
+          createdAt: new Date("2023-01-01T10:00:00Z"),
+          updatedAt: new Date("2023-01-01T10:00:00Z")
+        }
+      ];
+      
+      mockTaskRepository.getAll = vi.fn().mockResolvedValue(ok(mockTasks));
+    });
+
+    it("shows compact toggle hint in help", async () => {
+      const { lastFrame } = render(<TaskManager taskRepository={mockTaskRepository} />);
+      await vi.runAllTimersAsync();
+      expect(lastFrame()).toContain("c: Compact");
+    });
+
+    it("toggles to compact list with 'c' and back again", async () => {
+      const { lastFrame, stdin } = render(<TaskManager taskRepository={mockTaskRepository} />);
+      await vi.runAllTimersAsync();
+
+      // Detailed by default
+      expect(lastFrame()).toContain("Task List");
+      expect(lastFrame()).not.toContain("Task List (compact)");
+      expect(lastFrame()).toContain("Category:");
+      expect(lastFrame()).toContain("Created:");
+
+      // Toggle to compact
+      stdin.write("c");
+      await vi.runAllTimersAsync();
+      expect(lastFrame()).toContain("Task List (compact)");
+      // compact view hides verbose fields
+      expect(lastFrame()).not.toContain("Category:");
+      expect(lastFrame()).not.toContain("Created:");
+
+      // Still shows selection indicator and task name
+      expect(lastFrame()).toMatch(/> .*Test Task 1/);
+
+      // Toggle back to detailed
+      stdin.write("c");
+      await vi.runAllTimersAsync();
+      expect(lastFrame()).not.toContain("Task List (compact)");
+      expect(lastFrame()).toContain("Category:");
+    });
+  });
 });

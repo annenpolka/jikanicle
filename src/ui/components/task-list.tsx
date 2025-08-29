@@ -5,6 +5,7 @@ import type { Task, TaskStatus } from "../../domain/task.js";
 interface TaskListProps {
   tasks: Task[];
   selectedTaskId?: string;
+  compact?: boolean;
 }
 
 const getStatusColor = (status: TaskStatus): string => {
@@ -45,11 +46,13 @@ const formatDuration = (minutes?: number): string => {
   return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
 };
 
-export const TaskList: React.FC<TaskListProps> = ({ tasks, selectedTaskId }) => {
+export const TaskList: React.FC<TaskListProps> = ({ tasks, selectedTaskId, compact = false }) => {
   return (
     <Box flexDirection="column" padding={1}>
       <Box marginBottom={1}>
-        <Text bold underline>Task List</Text>
+        <Text bold underline>
+          Task List{compact ? " (compact)" : ""}
+        </Text>
       </Box>
       
       {tasks.length === 0 ? (
@@ -59,58 +62,72 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, selectedTaskId }) => 
       ) : (
         tasks.map((task) => (
           <Box key={task.id} marginBottom={1}>
-            <Box 
-              borderStyle="single" 
-              borderColor={selectedTaskId === task.id ? "blue" : "gray"}
-              padding={1}
-              width="100%"
-            >
-              <Box flexDirection="column">
-                <Box justifyContent="space-between">
-                  <Text bold>
-                    {selectedTaskId === task.id ? "> " : "  "}
-                    {task.name}
-                  </Text>
+            {compact ? (
+              <Box width="100%">
+                <Text>
+                  {selectedTaskId === task.id ? "> " : "  "}
+                  {task.name} 
+                  [
                   <Text color={getStatusColor(task.status)}>
                     {getStatusLabel(task.status)}
                   </Text>
-                </Box>
-                
-                {task.description && (
+                  ]
+                </Text>
+              </Box>
+            ) : (
+              <Box 
+                borderStyle="single" 
+                borderColor={selectedTaskId === task.id ? "blue" : "gray"}
+                padding={1}
+                width="100%"
+              >
+                <Box flexDirection="column">
+                  <Box justifyContent="space-between">
+                    <Text bold>
+                      {selectedTaskId === task.id ? "> " : "  "}
+                      {task.name}
+                    </Text>
+                    <Text color={getStatusColor(task.status)}>
+                      {getStatusLabel(task.status)}
+                    </Text>
+                  </Box>
+                  
+                  {task.description && (
+                    <Box marginTop={1}>
+                      <Text dimColor>{task.description}</Text>
+                    </Box>
+                  )}
+                  
+                  <Box marginTop={1} justifyContent="space-between">
+                    <Box>
+                      {task.category && (
+                        <Text color="cyan">Category: {task.category}</Text>
+                      )}
+                    </Box>
+                    <Box>
+                      <Text dimColor>
+                        Estimated: {formatDuration(task.estimatedDurationMinutes)}
+                        {task.actualDurationMinutes && 
+                          ` | Actual: ${formatDuration(task.actualDurationMinutes)}`
+                        }
+                      </Text>
+                    </Box>
+                  </Box>
+                  
                   <Box marginTop={1}>
-                    <Text dimColor>{task.description}</Text>
-                  </Box>
-                )}
-                
-                <Box marginTop={1} justifyContent="space-between">
-                  <Box>
-                    {task.category && (
-                      <Text color="cyan">Category: {task.category}</Text>
-                    )}
-                  </Box>
-                  <Box>
                     <Text dimColor>
-                      Estimated: {formatDuration(task.estimatedDurationMinutes)}
-                      {task.actualDurationMinutes && 
-                        ` | Actual: ${formatDuration(task.actualDurationMinutes)}`
+                      Created: {task.createdAt.toLocaleString("en-US")}
+                      {task.startedAt && 
+                        ` | Started: ${task.startedAt.toLocaleString("en-US")}`
+                      }
+                      {task.completedAt && 
+                        ` | Completed: ${task.completedAt.toLocaleString("en-US")}`
                       }
                     </Text>
                   </Box>
                 </Box>
-                
-                <Box marginTop={1}>
-                  <Text dimColor>
-                    Created: {task.createdAt.toLocaleString("en-US")}
-                    {task.startedAt && 
-                      ` | Started: ${task.startedAt.toLocaleString("en-US")}`
-                    }
-                    {task.completedAt && 
-                      ` | Completed: ${task.completedAt.toLocaleString("en-US")}`
-                    }
-                  </Text>
-                </Box>
               </Box>
-            </Box>
+            )}
           </Box>
         ))
       )}

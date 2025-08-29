@@ -244,8 +244,8 @@ describe("TaskManager", () => {
       stdin.write("c");
       await vi.runAllTimersAsync();
       expect(lastFrame()).toContain("Task List (compact)");
-      // compact view hides verbose fields
-      expect(lastFrame()).not.toContain("Category:");
+      // compact view now shows category but still hides created timestamp
+      expect(lastFrame()).toContain("Category:");
       expect(lastFrame()).not.toContain("Created:");
 
       // Still shows selection indicator and task name

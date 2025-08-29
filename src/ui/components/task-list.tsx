@@ -66,12 +66,16 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, selectedTaskId, compa
               <Box width="100%">
                 <Text>
                   {selectedTaskId === task.id ? "> " : "  "}
-                  {task.name} 
+                  {task.name}
+                  {" "}
                   [
                   <Text color={getStatusColor(task.status)}>
                     {getStatusLabel(task.status)}
                   </Text>
                   ]
+                  {task.category ? (
+                    <Text color="cyan"> {" | Category: "}{task.category}</Text>
+                  ) : ""}
                 </Text>
               </Box>
             ) : (

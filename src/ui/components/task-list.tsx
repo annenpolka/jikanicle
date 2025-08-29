@@ -133,7 +133,7 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, selectedTaskId, compa
                     </Box>
                     <Box>
                       <Text dimColor>
-                        Estimated: {formatDuration(task.estimatedDurationMinutes)}
+                        {" "}Estimated: {formatDuration(task.estimatedDurationMinutes)}
                         {task.actualDurationMinutes && 
                           ` | Actual: ${formatDuration(task.actualDurationMinutes)}`
                         }

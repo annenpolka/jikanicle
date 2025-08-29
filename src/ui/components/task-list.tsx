@@ -46,6 +46,19 @@ const formatDuration = (minutes?: number): string => {
   return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
 };
 
+const getElapsedMinutes = (task: Task): number | undefined => {
+  if (task.status === "completed" && task.actualDurationMinutes) {
+    return task.actualDurationMinutes;
+  }
+  if (task.status === "in-progress" && task.startedAt) {
+    const now = new Date();
+    const diffMs = now.getTime() - task.startedAt.getTime();
+    const minutes = Math.max(1, Math.round(diffMs / 60000));
+    return minutes;
+  }
+  return undefined;
+};
+
 export const TaskList: React.FC<TaskListProps> = ({ tasks, selectedTaskId, compact = false }) => {
   return (
     <Box flexDirection="column" padding={1}>
@@ -76,6 +89,16 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, selectedTaskId, compa
                   {task.category ? (
                     <Text color="cyan"> {" | Category: "}{task.category}</Text>
                   ) : ""}
+                  {task.estimatedDurationMinutes !== undefined && (
+                    <Text dimColor>{" | Estimated: "}{formatDuration(task.estimatedDurationMinutes)}</Text>
+                  )}
+                  {(() => {
+                    const elapsed = getElapsedMinutes(task);
+                    if (elapsed !== undefined) {
+                      return <Text dimColor>{" | Elapsed: "}{formatDuration(elapsed)}</Text>;
+                    }
+                    return "";
+                  })()}
                 </Text>
               </Box>
             ) : (

@@ -257,5 +257,74 @@ describe("TaskManager", () => {
       expect(lastFrame()).not.toContain("Task List (compact)");
       expect(lastFrame()).toContain("Category:");
     });
+
+    it("shows estimated time in compact view when available", async () => {
+      const { lastFrame, stdin } = render(<TaskManager taskRepository={mockTaskRepository} />);
+      await vi.runAllTimersAsync();
+
+      // Toggle to compact
+      stdin.write("c");
+      await vi.runAllTimersAsync();
+
+      expect(lastFrame()).toContain("Estimated: 30min");
+    });
+
+    it("shows elapsed time for in-progress tasks in compact view", async () => {
+      const started = new Date("2023-01-01T10:00:00Z");
+      const now = new Date("2023-01-01T10:05:00Z");
+      vi.setSystemTime(now);
+
+      mockTaskRepository.getAll = vi.fn().mockResolvedValue(ok([
+        {
+          id: "1",
+          name: "Test Task 1",
+          description: "This is a test task",
+          status: "in-progress" as const,
+          category: "work" as const,
+          estimatedDurationMinutes: 30,
+          startedAt: started,
+          createdAt: new Date("2023-01-01T10:00:00Z"),
+          updatedAt: started
+        }
+      ]));
+
+      const { lastFrame, stdin } = render(<TaskManager taskRepository={mockTaskRepository} />);
+      await vi.runAllTimersAsync();
+
+      // Toggle to compact
+      stdin.write("c");
+      await vi.runAllTimersAsync();
+
+      expect(lastFrame()).toContain("Elapsed: 5min");
+    });
+
+    it("shows elapsed time for completed tasks in compact view", async () => {
+      const now = new Date("2023-01-01T10:05:00Z");
+      vi.setSystemTime(now);
+
+      mockTaskRepository.getAll = vi.fn().mockResolvedValue(ok([
+        {
+          id: "1",
+          name: "Test Task 1",
+          description: "This is a test task",
+          status: "completed" as const,
+          category: "work" as const,
+          estimatedDurationMinutes: 30,
+          actualDurationMinutes: 5,
+          createdAt: new Date("2023-01-01T10:00:00Z"),
+          updatedAt: now,
+          completedAt: now
+        }
+      ]));
+
+      const { lastFrame, stdin } = render(<TaskManager taskRepository={mockTaskRepository} />);
+      await vi.runAllTimersAsync();
+
+      // Toggle to compact
+      stdin.write("c");
+      await vi.runAllTimersAsync();
+
+      expect(lastFrame()).toContain("Elapsed: 5min");
+    });
   });
 });

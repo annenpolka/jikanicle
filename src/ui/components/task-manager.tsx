@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Text, useInput } from "ink";
+import { Box, Text, useInput, useStdin } from "ink";
 import type { Task } from "../../domain/task.js";
 import type { TaskRepository } from "../../repository/task-repository.js";
 import { TaskList } from "./task-list.js";
@@ -12,6 +12,8 @@ interface TaskManagerProps {
 type ViewMode = "list" | "form";
 
 export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
+  const { isRawModeSupported } = useStdin();
+  const inputActive = isRawModeSupported || globalThis.process?.env?.NODE_ENV === "test";
   const [tasks, setTasks] = useState<Task[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [isLoading, setIsLoading] = useState(true);
@@ -60,7 +62,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
         setSelectedIndex((idx) => Math.max(idx - 1, 0));
       }
     }
-  });
+  }, { isActive: inputActive });
 
   const handleTaskSubmit = async (formData: TaskFormData) => {
     setIsLoading(true);
@@ -103,6 +105,13 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
       <Box padding={1}>
         <Text dimColor>n: New task | q: Quit</Text>
       </Box>
+      {!inputActive && (
+        <Box paddingX={1}>
+          <Text dimColor>
+            Keyboard input disabled (non-interactive stdin)
+          </Text>
+        </Box>
+      )}
       
       {viewMode === "list" && (
         <TaskList 
@@ -116,6 +125,8 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
           onCancel={handleFormCancel} 
         />
       )}
+
+      {/* input handler is registered via useInput above */}
     </Box>
   );
 };

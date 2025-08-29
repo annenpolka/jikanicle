@@ -17,7 +17,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
   const inputActive = isRawModeSupported || globalThis.process?.env?.NODE_ENV === "test";
   const [tasks, setTasks] = useState<Task[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
-  const [isCompact, setIsCompact] = useState<boolean>(false);
+  const [isCompact, setIsCompact] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);

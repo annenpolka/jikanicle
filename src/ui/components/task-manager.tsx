@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Text, useInput, useStdin } from "ink";
+import { Box, Text, useInput, useStdin, useStdout } from "ink";
 import type { Task } from "../../domain/task.js";
 import type { TaskRepository } from "../../repository/task-repository.js";
 import { TaskList } from "./task-list.js";
@@ -13,6 +13,7 @@ type ViewMode = "list" | "form";
 
 export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
   const { isRawModeSupported } = useStdin();
+  const { stdout } = useStdout();
   const inputActive = isRawModeSupported || globalThis.process?.env?.NODE_ENV === "test";
   const [tasks, setTasks] = useState<Task[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
@@ -46,6 +47,11 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
   };
 
   useEffect(() => {
+    // Clear screen once on startup to avoid any residual content
+    // from previous commands in the terminal session.
+    if (stdout?.isTTY) {
+      stdout.write("\x1b[2J\x1b[H");
+    }
     loadTasks();
   }, []);
 
@@ -53,6 +59,12 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ taskRepository }) => {
     if (input === "n") {
       setViewMode("form");
     } else if (input === "c") {
+      // Clear the screen before switching layouts to prevent residual artifacts
+      // on terminals that don't fully clear shorter subsequent frames.
+      if (stdout?.isTTY) {
+        // Clear screen and move cursor to top-left.
+        stdout.write("\x1b[2J\x1b[H");
+      }
       setIsCompact(prev => !prev);
     } else if (input === "q") {
       globalThis.process?.exit(0);
